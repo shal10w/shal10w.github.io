@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="shallow's blog" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="MRCTFwp（crypto）水题挺多，倒是最后一题还有点东西古典密码知多少猪圈+圣堂武士+mc附魔文字+栅栏密码没有什么华丽胡哨的MRCTF{CRYPTOFUN}keyboard手机九键按几下就是第几个字母MRCTF{mobilephone}天干地支+甲子（我记得buu有道差不多的，不然还真想不到先对表，然后+60，转ascii，就可以了，~（甚至觉得手动操作比脚本快~">
+<meta name="keywords" content="ctf">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MRCTFwp（crypto）">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;03&#x2F;30&#x2F;MRCTFwp&#x2F;index.html">
+<meta property="og:site_name" content="shallow&#39;s blog">
+<meta property="og:description" content="MRCTFwp（crypto）水题挺多，倒是最后一题还有点东西古典密码知多少猪圈+圣堂武士+mc附魔文字+栅栏密码没有什么华丽胡哨的MRCTF{CRYPTOFUN}keyboard手机九键按几下就是第几个字母MRCTF{mobilephone}天干地支+甲子（我记得buu有道差不多的，不然还真想不到先对表，然后+60，转ascii，就可以了，~（甚至觉得手动操作比脚本快~">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-03-30T15:19:18.135Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/03/30/MRCTFwp/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>MRCTFwp（crypto） | shallow's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">shallow's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/30/MRCTFwp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="shallow">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="shallow's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MRCTFwp（crypto）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-03-30 23:18:00 / 修改时间：23:19:18" itemprop="dateCreated datePublished" datetime="2020-03-30T23:18:00+08:00">2020-03-30</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ctf/" itemprop="url" rel="index">
+                    <span itemprop="name">ctf</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="MRCTFwp（crypto）"><a href="#MRCTFwp（crypto）" class="headerlink" title="MRCTFwp（crypto）"></a>MRCTFwp（crypto）</h1><p>水题挺多，倒是最后一题还有点东西</p><h3 id="古典密码知多少"><a href="#古典密码知多少" class="headerlink" title="古典密码知多少"></a>古典密码知多少</h3><p>猪圈+圣堂武士+mc附魔文字+栅栏密码</p><p>没有什么华丽胡哨的</p><p>MRCTF{CRYPTOFUN}</p><h3 id="keyboard"><a href="#keyboard" class="headerlink" title="keyboard"></a>keyboard</h3><p>手机九键</p><p>按几下就是第几个字母</p><p>MRCTF{mobilephone}</p><h3 id="天干地支-甲子"><a href="#天干地支-甲子" class="headerlink" title="天干地支+甲子"></a>天干地支+甲子</h3><p>（我记得buu有道差不多的，不然还真想不到</p><p>先对表，然后+60，转ascii，就可以了，<del>~（甚至觉得手动操作比脚本快</del>~</p><a id="more"></a>
+
+
+
+
+
+
+
+
+<p>MRCTF{goodjob}</p>
+<h3 id="vigenere"><a href="#vigenere" class="headerlink" title="vigenere"></a>vigenere</h3><p>不多说啥了，原理详见soreau师傅的博客orz</p>
+<p><a href="http://www.soreatu.com/essay/Cryptanalysis of Vigenere Cipher.html" target="_blank" rel="noopener">http://www.soreatu.com/essay/Cryptanalysis%20of%20Vigenere%20Cipher.html</a></p>
+<p>exp:(由于我为了偷懒是跟xor的魔改版放在一起的脚本，因此也许有些乱，建议去sore师傅博客看)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line">table = [chr(x) <span class="keyword">for</span> x <span class="keyword">in</span> range(ord(<span class="string">'a'</span>) , ord(<span class="string">'z'</span>)+<span class="number">1</span>)]</span><br><span class="line">ROTL = <span class="keyword">lambda</span> s1 , key : <span class="string">''</span>.join([table[(table.index(x) - key + len(table))%len(table)] <span class="keyword">for</span> x <span class="keyword">in</span> s1])</span><br><span class="line">ROTR = <span class="keyword">lambda</span> s1 , key : <span class="string">''</span>.join([table[(table.index(x) + key)%len(table)] <span class="keyword">for</span> x <span class="keyword">in</span> s1])</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">IndCo</span><span class="params">(nlist)</span>:</span></span><br><span class="line">    <span class="string">'''judge the key size by Index of coincidence</span></span><br><span class="line"><span class="string">    nlist : the lower cipher list(bytes)</span></span><br><span class="line"><span class="string">    return the result(if the size is the true size , the result is round 0.06.Else , the result will be below 0.05)'''</span></span><br><span class="line"></span><br><span class="line">    resultlist = []</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> nlist:</span><br><span class="line">        freq = &#123;&#125;</span><br><span class="line">        lenth = len(j)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> j:</span><br><span class="line">            <span class="keyword">if</span> i <span class="keyword">in</span> freq:</span><br><span class="line">                freq[i] += <span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                freq[i] = <span class="number">1</span></span><br><span class="line">        result = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> freq:</span><br><span class="line">            result += freq[i]*(freq[i] - <span class="number">1</span>)</span><br><span class="line">        result /= lenth * (lenth<span class="number">-1</span>)</span><br><span class="line">        resultlist.append(result)</span><br><span class="line">    <span class="keyword">if</span> sum(resultlist) / len(resultlist) &gt; <span class="number">0.055</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">keysize</span><span class="params">(msg ,begin=<span class="number">4</span> , end = <span class="number">40</span>)</span>:</span></span><br><span class="line">    <span class="string">'''break the key size </span></span><br><span class="line"><span class="string">    msg: the cipher(lower)(bytes)</span></span><br><span class="line"><span class="string">    begin , end: the range of key size</span></span><br><span class="line"><span class="string">    return the most probable key size list'''</span>  </span><br><span class="line">    MsgLenth = len(msg)</span><br><span class="line"></span><br><span class="line">    keysize = []</span><br><span class="line">    group = min(begin  , <span class="number">4</span>)</span><br><span class="line">    <span class="keyword">for</span> size <span class="keyword">in</span> range(begin , end + <span class="number">1</span>):</span><br><span class="line">        templist = [msg[i::size] <span class="keyword">for</span> i <span class="keyword">in</span> range(group)]</span><br><span class="line">        <span class="keyword">if</span> IndCo(templist):</span><br><span class="line">            keysize.append(size)</span><br><span class="line">    <span class="keyword">return</span> keysize</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ChiSquared</span><span class="params">(msg)</span>:</span></span><br><span class="line">    <span class="string">'''Chi-squared Statistic</span></span><br><span class="line"><span class="string">    msg: str'''</span></span><br><span class="line">    standard_letter_frequency = &#123;  <span class="comment"># From https://en.wikipedia.org/wiki/Letter_frequency.</span></span><br><span class="line">    <span class="string">'e'</span>: <span class="number">0.12702</span>,<span class="string">'t'</span>: <span class="number">0.09056</span>,<span class="string">'a'</span>: <span class="number">0.08167</span>,<span class="string">'o'</span>: <span class="number">0.07507</span>,<span class="string">'i'</span>: <span class="number">0.06966</span>,<span class="string">'n'</span>: <span class="number">0.06749</span>,</span><br><span class="line">    <span class="string">'s'</span>: <span class="number">0.06327</span>,<span class="string">'h'</span>: <span class="number">0.06094</span>,<span class="string">'r'</span>: <span class="number">0.05987</span>,<span class="string">'d'</span>: <span class="number">0.04253</span>,<span class="string">'l'</span>: <span class="number">0.04025</span>,<span class="string">'c'</span>: <span class="number">0.02782</span>,</span><br><span class="line">    <span class="string">'u'</span>: <span class="number">0.02758</span>,<span class="string">'m'</span>: <span class="number">0.02406</span>,<span class="string">'w'</span>: <span class="number">0.02360</span>,<span class="string">'f'</span>: <span class="number">0.02228</span>,<span class="string">'g'</span>: <span class="number">0.02015</span>,<span class="string">'y'</span>: <span class="number">0.01974</span>,</span><br><span class="line">    <span class="string">'p'</span>: <span class="number">0.01929</span>,<span class="string">'b'</span>: <span class="number">0.01492</span>,<span class="string">'v'</span>: <span class="number">0.00978</span>,<span class="string">'k'</span>: <span class="number">0.00772</span>,<span class="string">'j'</span>: <span class="number">0.00153</span>,<span class="string">'x'</span>: <span class="number">0.00150</span>,</span><br><span class="line">    <span class="string">'q'</span>: <span class="number">0.00095</span>,<span class="string">'z'</span>: <span class="number">0.00074</span>,<span class="string">' '</span>: <span class="number">0.25000</span>&#125;</span><br><span class="line">    result = <span class="number">0</span></span><br><span class="line">    msg = msg.lower()</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> msg:</span><br><span class="line">        <span class="keyword">if</span> i <span class="keyword">in</span> standard_letter_frequency:</span><br><span class="line">            result += standard_letter_frequency[i]</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">singlekey_rot</span><span class="params">(cipher)</span>:</span></span><br><span class="line">    <span class="string">'''get the most probable key byte</span></span><br><span class="line"><span class="string">    cipher: encrypted by the same byte of key.And must be letters(without blank)(string)(lower)</span></span><br><span class="line"><span class="string">    return: the byte of key(str)'''</span>    </span><br><span class="line">    result = <span class="number">-1</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">26</span>):</span><br><span class="line">        tempmsg = ROTL(cipher , i)</span><br><span class="line">        tempresult = ChiSquared(tempmsg , <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">if</span> tempresult &lt; result <span class="keyword">or</span> result == <span class="number">-1</span>:</span><br><span class="line">            result = tempresult</span><br><span class="line">            key = chr(i + ord(<span class="string">'a'</span>))</span><br><span class="line">    <span class="keyword">return</span> key</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">break_key_reuse_rot</span><span class="params">(msg)</span>:</span></span><br><span class="line">    <span class="string">'''msg: str</span></span><br><span class="line"><span class="string">    return a dic &#123;keysize : key&#125;, keysize is int, key is bytes'''</span></span><br><span class="line">    key_size = keysize(msg , <span class="number">1</span>)</span><br><span class="line">    key = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> key_size:</span><br><span class="line">        temp = <span class="string">''</span></span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(i):</span><br><span class="line">            temp += singlekey_rot(msg[j::i])</span><br><span class="line">        key[i] = temp</span><br><span class="line">    <span class="keyword">return</span> key</span><br><span class="line">f = open(<span class="string">'./vigenere/cipher.txt'</span> , <span class="string">'r'</span>)</span><br><span class="line">s = f.read()</span><br><span class="line">c = <span class="string">''</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> s:</span><br><span class="line">    <span class="keyword">if</span> ord(<span class="string">'a'</span>) &lt;= ord(i) &lt;= ord(<span class="string">'z'</span>):</span><br><span class="line">        c += i</span><br><span class="line">key = break_key_reuse_rot(c)[<span class="number">6</span>]</span><br><span class="line">getdiff = <span class="keyword">lambda</span> char: ord(char)-ord(<span class="string">'a'</span>)</span><br><span class="line">getchar = <span class="keyword">lambda</span> num: chr(ord(<span class="string">'a'</span>)+num)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">vigenere</span><span class="params">(src, key)</span>:</span></span><br><span class="line">    <span class="keyword">assert</span>(src.isalpha() <span class="keyword">and</span> key.isalpha())</span><br><span class="line">    <span class="keyword">return</span>(getchar((getdiff(src) - getdiff(key) + <span class="number">26</span>) % <span class="number">26</span>))</span><br><span class="line">count = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> s:</span><br><span class="line">    <span class="keyword">if</span>(i.isalpha()):</span><br><span class="line">        print(vigenere(i, key[count % len(key)]), end=<span class="string">''</span>)</span><br><span class="line">        count+=<span class="number">1</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        print(i, end=<span class="string">''</span>)</span><br></pre></td></tr></table></figure>
+<p>(后面是抄出题脚本用爆破出的key解密得到flag)</p>
+<h3 id="easyrsa"><a href="#easyrsa" class="headerlink" title="easyrsa"></a>easyrsa</h3><p>先算p，给n与$\phi(n)$求p,q，由于n=pq，因此只需要求出p+q就可以用一元二次方程求出答案。</p>
+<p>而$\phi(n) = (p-1)*(q-1) = pq-p-q+1 $</p>
+<p>因此$p+q = n - \phi(n) + 1$</p>
+<p>接下来一元二次方程就行</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Solve</span><span class="params">(a , b , c)</span>:</span></span><br><span class="line">    <span class="string">'''solve ax^2+bx+c=0 , return x1 , x2'''</span></span><br><span class="line">    delta = b**<span class="number">2</span> - <span class="number">4</span> * a * c</span><br><span class="line">    <span class="keyword">if</span> delta &lt; <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">if</span> is_square(delta):</span><br><span class="line">        sqr_delta = isqrt(delta)</span><br><span class="line">        temp1 = -b + sqr_delta</span><br><span class="line">        temp2 = -b - sqr_delta</span><br><span class="line">        <span class="keyword">if</span> temp1 % (<span class="number">2</span>*a) != <span class="number">0</span> <span class="keyword">or</span> temp2 % (<span class="number">2</span>*a) != <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> [temp1//(<span class="number">2</span>*a) , temp2//(<span class="number">2</span>*a)]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_next</span><span class="params">(x)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> x % <span class="number">2</span> == <span class="number">0</span>:</span><br><span class="line">        x += <span class="number">1</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        x+=<span class="number">2</span></span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">not</span> is_prime(x):</span><br><span class="line">        x += <span class="number">2</span></span><br><span class="line">    <span class="keyword">return</span> x</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gen_p</span><span class="params">()</span>:</span></span><br><span class="line">    n = mpz(<span class="number">14057332139537395701238463644827948204030576528558543283405966933509944444681257521108769303999679955371474546213196051386802936343092965202519504111238572269823072199039812208100301939365080328518578704076769147484922508482686658959347725753762078590928561862163337382463252361958145933210306431342748775024336556028267742021320891681762543660468484018686865891073110757394154024833552558863671537491089957038648328973790692356014778420333896705595252711514117478072828880198506187667924020260600124717243067420876363980538994101929437978668709128652587073901337310278665778299513763593234951137512120572797739181693</span>)</span><br><span class="line">    phi = mpz(<span class="number">14057332139537395701238463644827948204030576528558543283405966933509944444681257521108769303999679955371474546213196051386802936343092965202519504111238572269823072199039812208100301939365080328518578704076769147484922508482686658959347725753762078590928561862163337382463252361958145933210306431342748775024099427363967321110127562039879018616082926935567951378185280882426903064598376668106616694623540074057210432790309571018778281723710994930151635857933293394780142192586806292968028305922173313521186946635709194350912242693822450297748434301924950358561859804256788098033426537956252964976682327991427626735740</span>)</span><br><span class="line">    p_q = n - phi + <span class="number">1</span></span><br><span class="line">    p , q = Solve(<span class="number">1</span> , -p_q , n)</span><br><span class="line">    <span class="keyword">if</span> p &gt; q :</span><br><span class="line">        p , q = q , p</span><br><span class="line">    factor2 = <span class="number">2021</span> * p + <span class="number">2020</span> * q</span><br><span class="line">    <span class="keyword">if</span> factor2 &lt; <span class="number">0</span>:</span><br><span class="line">        factor2 = (<span class="number">-1</span>) * factor2</span><br><span class="line">    <span class="keyword">return</span> get_next(factor2)</span><br></pre></td></tr></table></figure>
+<p>q比p难求一点，已知e*d与n求p和q</p>
+<script type="math/tex; mode=display">
+ed \equiv 1 (mod \phi(n))</script><script type="math/tex; mode=display">
+因此设ed-1 = k _1\phi(n)</script><script type="math/tex; mode=display">
+设ed = k_2 *n + b = k_2 (\phi(n) + p+q-1) + b</script><script type="math/tex; mode=display">
+又0<\frac{p+q-1}{\phi(n)}<\frac{2}{max(p,q)},0<b < 2\phi(n)</script><script type="math/tex; mode=display">
+k_2\phi(n)<k_1 \phi(n) + 1< (k_2+2+\frac{2k_2}{max(p , q)})\phi(n)</script><script type="math/tex; mode=display">
+k_2 < k_1< k_2+2+\frac{2k_2}{max(p , q)}</script><p>而k2是可以通过e*d // n得到，k2也不会很大因此可以从$k_2$往上找，基本在1-3之间一定能出来</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gen_q</span><span class="params">()</span>:</span></span><br><span class="line">    n = mpz(<span class="number">20714298338160449749545360743688018842877274054540852096459485283936802341271363766157976112525034004319938054034934880860956966585051684483662535780621673316774842614701726445870630109196016676725183412879870463432277629916669130494040403733295593655306104176367902352484367520262917943100467697540593925707162162616635533550262718808746254599456286578409187895171015796991910123804529825519519278388910483133813330902530160448972926096083990208243274548561238253002789474920730760001104048093295680593033327818821255300893423412192265814418546134015557579236219461780344469127987669565138930308525189944897421753947</span>)</span><br><span class="line">    ed = mpz(<span class="number">100772079222298134586116156850742817855408127716962891929259868746672572602333918958075582671752493618259518286336122772703330183037221105058298653490794337885098499073583821832532798309513538383175233429533467348390389323225198805294950484802068148590902907221150968539067980432831310376368202773212266320112670699737501054831646286585142281419237572222713975646843555024731855688573834108711874406149540078253774349708158063055754932812675786123700768288048445326199880983717504538825498103789304873682191053050366806825802602658674268440844577955499368404019114913934477160428428662847012289516655310680119638600315228284298935201</span>)</span><br><span class="line">    ed = ed <span class="number">-1</span></span><br><span class="line">    k = ed// n</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(k , k + <span class="number">2</span>):</span><br><span class="line">        <span class="keyword">if</span> ed % i == <span class="number">0</span>:</span><br><span class="line">            phi = ed // i</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    p_q = n - phi + <span class="number">1</span></span><br><span class="line">    p , q = Solve(<span class="number">1</span> , -p_q , n)</span><br><span class="line">    <span class="keyword">if</span> p &gt; q :</span><br><span class="line">        p , q = q , p</span><br><span class="line">    factor2 = <span class="number">2021</span> * p - <span class="number">2020</span> * q</span><br><span class="line">    <span class="keyword">if</span> factor2 &lt; <span class="number">0</span>:</span><br><span class="line">        factor2 = (<span class="number">-1</span>) * factor2</span><br><span class="line">    <span class="keyword">return</span> get_next(factor2)</span><br></pre></td></tr></table></figure>
+<p>正常rsa</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Ciphertext =  <span class="number">40855937355228438525361161524441274634175356845950884889338630813182607485910094677909779126550263304194796000904384775495000943424070396334435810126536165332565417336797036611773382728344687175253081047586602838685027428292621557914514629024324794275772522013126464926990620140406412999485728750385876868115091735425577555027394033416643032644774339644654011686716639760512353355719065795222201167219831780961308225780478482467294410828543488412258764446494815238766185728454416691898859462532083437213793104823759147317613637881419787581920745151430394526712790608442960106537539121880514269830696341737507717448946962021</span></span><br><span class="line">p = gen_p()</span><br><span class="line">q = gen_q()</span><br><span class="line">n = p * q</span><br><span class="line">phi = (p<span class="number">-1</span>) * (q<span class="number">-1</span>)</span><br><span class="line">e = <span class="number">65537</span></span><br><span class="line">d = invert(e , phi)</span><br><span class="line">print(bytes.fromhex(hex(powmod(Ciphertext , d , n))[<span class="number">2</span>:]))</span><br></pre></td></tr></table></figure>
+<h3 id="babyrsa"><a href="#babyrsa" class="headerlink" title="babyrsa"></a>babyrsa</h3><p>baby题居然比easy题简单！</p>
+<p>题目中，gen_p是getPrime(128)后，在它后面找了连续的17个质数，并且告诉了我们第9个，显然这是很容易得到剩下16个，然后给了powmod(p , 65537,n)，n是17个质数的乘积，而知道了17个质数，很容易求得$\phi(n) = \prod_{i=1}^{17} {(p_i-1)} $接下来就可以计算$d = invert(65537 , \phi(n))，p = powmod(factor, d , n)$</p>
+<p>exp:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_next</span><span class="params">(x)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> x % <span class="number">2</span> == <span class="number">0</span>:</span><br><span class="line">        x += <span class="number">1</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        x+=<span class="number">2</span></span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">not</span> is_prime(x):</span><br><span class="line">        x += <span class="number">2</span></span><br><span class="line">    <span class="keyword">return</span> x</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_pre</span><span class="params">(x)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> x % <span class="number">2</span> == <span class="number">0</span>:</span><br><span class="line">        x -= <span class="number">1</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        x-=<span class="number">2</span></span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">not</span> is_prime(x):</span><br><span class="line">        x -= <span class="number">2</span></span><br><span class="line">    <span class="keyword">return</span> x</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gen_p</span><span class="params">()</span>:</span></span><br><span class="line">    p0 = mpz(<span class="number">206027926847308612719677572554991143421</span>)</span><br><span class="line">    plist = [p0] </span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">9</span>):</span><br><span class="line">        plist.append(get_pre(plist[<span class="number">-1</span>]))</span><br><span class="line">    plist.reverse()</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">7</span>):</span><br><span class="line">        plist.append(get_next(plist[<span class="number">-1</span>]))</span><br><span class="line">    n = <span class="number">1</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">17</span>):</span><br><span class="line">        n *= plist[i]</span><br><span class="line">    factor = mpz(<span class="number">213671742765908980787116579976289600595864704574134469173111790965233629909513884704158446946409910475727584342641848597858942209151114627306286393390259700239698869487469080881267182803062488043469138252786381822646126962323295676431679988602406971858136496624861228526070581338082202663895710929460596143281673761666804565161435963957655012011051936180536581488499059517946308650135300428672486819645279969693519039407892941672784362868653243632727928279698588177694171797254644864554162848696210763681197279758130811723700154618280764123396312330032986093579531909363210692564988076206283296967165522152288770019720928264542910922693728918198338839</span>)</span><br><span class="line">    phi = <span class="number">1</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">17</span>):</span><br><span class="line">        phi *= plist[i] - <span class="number">1</span></span><br><span class="line">    d = invert(<span class="number">65537</span> , phi)</span><br><span class="line">    <span class="keyword">return</span> get_next(powmod(factor , d , n))</span><br></pre></td></tr></table></figure>
+<p>q就是白给，直接求个逆就能算</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gen_q</span><span class="params">()</span>:</span></span><br><span class="line">    q1 = mpz(<span class="number">103766439849465588084625049495793857634556517064563488433148224524638105971161051763127718438062862548184814747601299494052813662851459740127499557785398714481909461631996020048315790167967699932967974484481209879664173009585231469785141628982021847883945871201430155071257803163523612863113967495969578605521</span>)</span><br><span class="line">    q2 = mpz(<span class="number">151010734276916939790591461278981486442548035032350797306496105136358723586953123484087860176438629843688462671681777513652947555325607414858514566053513243083627810686084890261120641161987614435114887565491866120507844566210561620503961205851409386041194326728437073995372322433035153519757017396063066469743</span>)</span><br><span class="line">    subq = mpz(<span class="number">168992529793593315757895995101430241994953638330919314800130536809801824971112039572562389449584350643924391984800978193707795909956472992631004290479273525116959461856227262232600089176950810729475058260332177626961286009876630340945093629959302803189668904123890991069113826241497783666995751391361028949651</span>)</span><br><span class="line">    q = powmod(subq , q2 , q1)</span><br><span class="line">    <span class="keyword">return</span> get_next(q)</span><br></pre></td></tr></table></figure>
+<p>接下来就是正常rsa解密</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">p = gen_p()</span><br><span class="line">q = gen_q()</span><br><span class="line">n = p * q </span><br><span class="line">phi = (p<span class="number">-1</span>)*(q<span class="number">-1</span>)</span><br><span class="line">e = <span class="number">65537</span></span><br><span class="line">c = mpz(<span class="number">1709187240516367141460862187749451047644094885791761673574674330840842792189795049968394122216854491757922647656430908587059997070488674220330847871811836724541907666983042376216411561826640060734307013458794925025684062804589439843027290282034999617915124231838524593607080377300985152179828199569474241678651559771763395596697140206072537688129790126472053987391538280007082203006348029125729650207661362371936196789562658458778312533505938858959644541233578654340925901963957980047639114170033936570060250438906130591377904182111622236567507022711176457301476543461600524993045300728432815672077399879668276471832</span>)</span><br><span class="line">d = invert(e , phi)</span><br><span class="line">print(bytes.fromhex(hex(powmod(c , d, n))[<span class="number">2</span>:]))</span><br></pre></td></tr></table></figure>
+<h3 id="real-random"><a href="#real-random" class="headerlink" title="real random"></a>real random</h3><p>题目告诉了M与D，猜对flag_part是哪一个就给flag的一字节。先分析random那个函数，将M分解，可以得到p，q（p与q是getPrime(6)，总共只有8种可能，很容易分解），用p与q能够算出m和b</p>
+<p>但是c不知道，因此推测对于不同的c，也许会有一个共同的周期，或是周期有一个固定的公倍数</p>
+<script type="math/tex; mode=display">
+x_n = bx_{n-1}+c(mod\ m)</script><script type="math/tex; mode=display">
+\begin{equation}\begin{split} 
+x_k &= b^kx_0 + c \sum^{k-1}_{i=0} b^i mod \ m\\
+&（设4pq=n,则b=n+1,m=8n）\\
+&=(n+1)^kx_0 + c\frac{b^k-1}{b-1} mod\ 8n\\
+&=(\frac{k(k-1)}{2}n^2 + kn+1)x_0 + c(\frac{(k-1)k}{2}n + k) mod \ 8n\\
+&=x_0 + k(\frac{k-1}{2}n+1)(nx_0+c) mod \ 8n
+\end{split}\end{equation}</script><script type="math/tex; mode=display">
+又 \frac{k-1}{2}n+1 = 2(k-1)pq + 1 ,gcd(2(k-1)pq + 1 , 32pq)=1</script><script type="math/tex; mode=display">
+因此，仅当kd = 8an时(d= gcd(nx_0+c , 8n),a为任意正整数)，x_k = x_0\\
+即最小正周期为\frac{8n}{d}，且对于任意的c，8n也就是m一定是它的一个周期</script><p>因此每进行m次操作，就会回到初始值，random[0]是进行了2**d次操作的，因此只要发$m-(2^d mod  m)$即可</p>
+<p>exp：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> gmpy2 <span class="keyword">import</span> mpz , is_prime , powmod , invert</span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">from</span> Crypto.Util.number <span class="keyword">import</span> getPrime</span><br><span class="line">sys.path.append(<span class="string">'/home/shallow/crypto/rsa'</span>)</span><br><span class="line"><span class="keyword">from</span> factor <span class="keyword">import</span> Pollard_rho</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line">prime = [<span class="number">47</span>, <span class="number">67</span>, <span class="number">59</span>, <span class="number">53</span>, <span class="number">37</span>, <span class="number">41</span>, <span class="number">61</span>, <span class="number">43</span>]</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">factor</span><span class="params">(n)</span>:</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> prime:</span><br><span class="line">        <span class="keyword">if</span> n %(i<span class="number">-1</span>) == <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> [i , n// (i<span class="number">-1</span>) + <span class="number">1</span>]</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_flag</span><span class="params">(pre)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> pre// (<span class="number">16</span>**<span class="number">2</span>+<span class="number">1</span>)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">guess</span><span class="params">(n , d)</span>:</span></span><br><span class="line">    p , q  = factor(n)</span><br><span class="line">    m = p * q * <span class="number">2</span> ** <span class="number">5</span></span><br><span class="line">    <span class="keyword">return</span> m - (<span class="number">2</span> ** d % m)</span><br><span class="line">p = remote(<span class="string">'38.39.244.2'</span>, <span class="string">'28101'</span>)</span><br><span class="line">p.recvuntil(<span class="string">b'GAME START : )'</span>)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">recv</span><span class="params">()</span>:</span></span><br><span class="line">    p.recvuntil(<span class="string">'m:  '</span>)</span><br><span class="line">    m = int(p.recvuntil(<span class="string">'\n'</span>))</span><br><span class="line">    p.recvuntil(<span class="string">'d:  '</span>)</span><br><span class="line">    d = int(p.recvuntil(<span class="string">'\n'</span>))</span><br><span class="line">    p.recvuntil(<span class="string">'Now guess where the flag is ^_^ \n'</span>)</span><br><span class="line">    <span class="keyword">return</span> m , d</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">send</span><span class="params">(num)</span>:</span></span><br><span class="line">    p.sendline(str(num))</span><br><span class="line">    pre_flag = int(p.recvuntil(<span class="string">'\n'</span>))</span><br><span class="line">    print(pre_flag)</span><br><span class="line">    <span class="keyword">return</span> chr(generate_flag(pre_flag))</span><br><span class="line">flag = <span class="string">''</span></span><br><span class="line"><span class="keyword">while</span> <span class="number">1</span> :</span><br><span class="line">    m , d = recv()</span><br><span class="line">    num = guess(m , d)</span><br><span class="line">    flag += send(num)</span><br><span class="line">    print(flag)</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ctf/" rel="tag"># ctf</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2019/11/05/helloworld/" rel="next" title="hello world!">
+                  <i class="fa fa-chevron-left"></i> hello world!
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#MRCTFwp（crypto）"><span class="nav-number">1.</span> <span class="nav-text">MRCTFwp（crypto）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#古典密码知多少"><span class="nav-number">1.0.1.</span> <span class="nav-text">古典密码知多少</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#keyboard"><span class="nav-number">1.0.2.</span> <span class="nav-text">keyboard</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#天干地支-甲子"><span class="nav-number">1.0.3.</span> <span class="nav-text">天干地支+甲子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vigenere"><span class="nav-number">1.0.4.</span> <span class="nav-text">vigenere</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#easyrsa"><span class="nav-number">1.0.5.</span> <span class="nav-text">easyrsa</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#babyrsa"><span class="nav-number">1.0.6.</span> <span class="nav-text">babyrsa</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#real-random"><span class="nav-number">1.0.7.</span> <span class="nav-text">real random</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="shallow"
+    src="/images/header.jpg">
+  <p class="site-author-name" itemprop="name">shallow</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/shal10w" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;shal10w" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.wootec.top/" title="https:&#x2F;&#x2F;www.wootec.top" rel="noopener" target="_blank">Reverier</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cor1e.cn/" title="https:&#x2F;&#x2F;www.cor1e.cn" rel="noopener" target="_blank">Cor1e</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/arttnba3" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;arttnba3" rel="noopener" target="_blank">arttnba3</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/qq_39679772" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_39679772" rel="noopener" target="_blank">zjx带佬</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/mer_cer" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;mer_cer" rel="noopener" target="_blank">mercer</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://eqqie.cn/" title="https:&#x2F;&#x2F;eqqie.cn" rel="noopener" target="_blank">eqqie</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shallow</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.5.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

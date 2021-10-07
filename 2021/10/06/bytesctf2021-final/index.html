@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="文章首发于安全客">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[bytesctf2021 final]Crypto WP">
+<meta property="og:url" content="http://yoursite.com/2021/10/06/bytesctf2021-final/index.html">
+<meta property="og:site_name" content="shallow&#39;s blog">
+<meta property="og:description" content="文章首发于安全客">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-10-06T06:26:08.000Z">
+<meta property="article:modified_time" content="2021-10-07T06:37:05.299Z">
+<meta property="article:author" content="shallow">
+<meta property="article:tag" content="CTF">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2021/10/06/bytesctf2021-final/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>[bytesctf2021 final]Crypto WP | shallow's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">shallow's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/10/06/bytesctf2021-final/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="shallow">
+      <meta itemprop="description" content="Crypto/CTFs/Mathematics">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="shallow's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [bytesctf2021 final]Crypto WP
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-10-06 14:26:08" itemprop="dateCreated datePublished" datetime="2021-10-06T14:26:08+08:00">2021-10-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-10-07 14:37:05" itemprop="dateModified" datetime="2021-10-07T14:37:05+08:00">2021-10-07</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/" itemprop="url" rel="index"><span itemprop="name">CTF</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>文章首发于<a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/225449">安全客</a></p>
+<span id="more"></span>
+<p>去年去北京打的bytesctf线下，质量还是挺高的。<del>ak很爽</del></p>
+<h2 id="impersonation">impersonation</h2>
+<p>Alice：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> KeyExchange <span class="keyword">import</span> KeyExchange</span><br><span class="line"><span class="keyword">from</span> gmssl <span class="keyword">import</span> func</span><br><span class="line"><span class="keyword">from</span> flag <span class="keyword">import</span> FLAG</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> signal</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line">sys.stderr = <span class="built_in">open</span>(<span class="string">&#x27;/dev/null&#x27;</span>, <span class="string">&#x27;w&#x27;</span>)</span><br><span class="line">signal.alarm(<span class="number">5</span>)</span><br><span class="line"></span><br><span class="line">n = <span class="string">&#x27;FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFF7203DF6B21C6052B53BBF40939D54123&#x27;</span></span><br><span class="line">public_key_B = <span class="string">&#x27;e52f035c340267a2ee2c57de87db9acf443d1fb98f0b7abbc55d9f332f4f823e&#x27;</span> \</span><br><span class="line">               <span class="string">&#x27;0f81e7dde971b1e4d02981fc5741eb30f71bf6bcd0c02b06e5c857eedc58cae5&#x27;</span></span><br><span class="line"></span><br><span class="line">G = <span class="string">&#x27;32c4ae2c1f1981195f9904466a39c9948fe30bbff2660be1715a4589334c74c7&#x27;</span> \</span><br><span class="line">    <span class="string">&#x27;bc3736a2f4f6779c59bdcee36b692153d0a9877cc62a474002df32e52139f0a0&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Hi, Can you tell me bob&#x27;s address?&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;I have a message to tell him.&quot;</span>)</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    addr = <span class="built_in">input</span>(<span class="string">&#x27;&gt;&gt;&gt;&#x27;</span>).strip()</span><br><span class="line">    ip, port = [x.strip() <span class="keyword">for</span> x <span class="keyword">in</span> addr.split(<span class="string">&#x27;:&#x27;</span>)]</span><br><span class="line">    port = <span class="built_in">int</span>(port)</span><br><span class="line"><span class="keyword">except</span>:</span><br><span class="line">    ip, port = <span class="string">&#x27;bob&#x27;</span>, <span class="number">1337</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;OK! <span class="subst">&#123;ip&#125;</span>:<span class="subst">&#123;port&#125;</span>, I got it!&quot;</span>)</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">    s.connect((ip, port))</span><br><span class="line">    data = s.recv(<span class="number">1024</span>).strip()</span><br><span class="line">    <span class="keyword">assert</span> data == <span class="string">b&#x27;Hi, Alice?&#x27;</span></span><br><span class="line"><span class="keyword">except</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Oh noooooo! Where did Bob go?&quot;</span>)</span><br><span class="line">    exit()</span><br><span class="line"></span><br><span class="line">KE = KeyExchange()</span><br><span class="line">r_str = func.random_hex(<span class="built_in">len</span>(n))</span><br><span class="line">P_a, T_a = KE.send(r_str)</span><br><span class="line">s.sendall(<span class="string">f&#x27;<span class="subst">&#123;P_a.zfill(<span class="number">128</span>)&#125;</span><span class="subst">&#123;T_a&#125;</span>\n&#x27;</span>.encode())</span><br><span class="line">time.sleep(<span class="number">0.1</span>)</span><br><span class="line">data = s.recv(<span class="number">1024</span>).strip().decode()</span><br><span class="line">P_b, T_b = data[:<span class="number">128</span>],  data[<span class="number">128</span>:]</span><br><span class="line"><span class="keyword">if</span> P_b != public_key_B:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Oh noooooo! Fake Bob!&quot;</span>)</span><br><span class="line">    exit()</span><br><span class="line">msg = KE.transport(P_b, T_b, FLAG)</span><br><span class="line">s.sendall(<span class="string">f&#x27;<span class="subst">&#123;msg&#125;</span>\n&#x27;</span>.encode())</span><br><span class="line">time.sleep(<span class="number">0.1</span>)</span><br><span class="line">data = s.recv(<span class="number">1024</span>).strip().decode()</span><br><span class="line">msg = KE.decrypt(data)</span><br><span class="line"><span class="keyword">if</span> FLAG == msg:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;My feelings are transmitted, Bye~&quot;</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Oh noooooo! Fake Bob!&quot;</span>)</span><br><span class="line">exit()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>中间人攻击</p>
+<p>场景大概是Alice想与Bob通信，可以通过本地起一个socket当服务器，给他自己的ip, port后再连接Bob即可拦截与修改信息，进行中间人攻击。很有趣的背景，这个场景是有一定现实意义的，由于网站都有证书，所以Alice作为一个用户往往能够判断对方的公钥正确性，而服务器却不行，而若密钥协商协议实现有问题，则很有可能仍然有安全隐患。</p>
+<p>Bob的代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> KeyExchange <span class="keyword">import</span> KeyExchange</span><br><span class="line"><span class="keyword">from</span> gmssl <span class="keyword">import</span> func</span><br><span class="line"><span class="keyword">import</span> signal</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">sys.stderr = <span class="built_in">open</span>(<span class="string">&#x27;/dev/null&#x27;</span>, <span class="string">&#x27;w&#x27;</span>)</span><br><span class="line">signal.alarm(<span class="number">5</span>)</span><br><span class="line"></span><br><span class="line">n = <span class="string">&#x27;FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFF7203DF6B21C6052B53BBF40939D54123&#x27;</span></span><br><span class="line">private_key = <span class="string">&#x27;????????????????????????????????????????????????????????????????&#x27;</span></span><br><span class="line">public_key = <span class="string">&#x27;e52f035c340267a2ee2c57de87db9acf443d1fb98f0b7abbc55d9f332f4f823e&#x27;</span> \</span><br><span class="line">             <span class="string">&#x27;0f81e7dde971b1e4d02981fc5741eb30f71bf6bcd0c02b06e5c857eedc58cae5&#x27;</span></span><br><span class="line"></span><br><span class="line">KE = KeyExchange(public_key, private_key)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Hi, Alice?&#x27;</span>)</span><br><span class="line">data = <span class="built_in">input</span>().strip()</span><br><span class="line">P_a, T_a = data[:<span class="number">128</span>],  data[<span class="number">128</span>:]</span><br><span class="line">r_str = func.random_hex(<span class="built_in">len</span>(n))</span><br><span class="line">P_b, T_b = KE.respond(r_str, P_a, T_a)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;P_b.zfill(<span class="number">128</span>)&#125;</span><span class="subst">&#123;T_b&#125;</span>&#x27;</span>)</span><br><span class="line">data = <span class="built_in">input</span>().strip()</span><br><span class="line">msg = KE.reencrypt(data)</span><br><span class="line"><span class="built_in">print</span>(msg)</span><br></pre></td></tr></table></figure>
+<p>KeyExchange是一个修改过的ecdh，交换后Alice通过OTP发送flag，Bob再通过Alice的公钥发回。</p>
+<p>主要的困难（与教科书最基本的中间人攻击的区别）是Alice知道Bob的公钥，无法给她自己的公钥来实现转发。</p>
+<p>而可能的漏洞有三个：</p>
+<ul>
+<li>Bob不知道Alice的公钥</li>
+<li>Alice有对flag的decrypt功能，并且有回显</li>
+<li>Alice与Bob均不对点进行检查</li>
+</ul>
+<p>对于第二个漏洞，需要能找到一个改flag一位的地方，是初赛中类似题利用的漏洞。但是这次并没有这样的漏洞，加密时用与一个随机数异或，没办法确定对或者错对应的flag位的值。</p>
+<p>因此先考虑第一点与第三点的利用</p>
+<p>KeyExchange的流程是</p>
+<ul>
+<li>Alice -&gt; Bob : hash(ra * G) * AlicePublickey + ra * G</li>
+<li>Bob -&gt; Alice : hash(rb * G) * BobPublickey + rb * G</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(hash(rb * G) * BobPrivatekey + rb) * (hash(ra * G) * AlicePublickey + ra * G)</span><br><span class="line"></span><br><span class="line">= (hash(rb * G) * BobPrivatekey + rb) * (hash(ra * G) * AlicePrivatekey + ra) * G</span><br><span class="line"></span><br><span class="line">= (hash(rb * G) * BobPublickey + rb * G) * (hash(ra * G) * AlicePrivatekey + ra)</span><br></pre></td></tr></table></figure>
+<p>而这个共享密钥是通过这个点经过SM3得到，两个不同的点得到的密钥之间没有任何关系</p>
+<p>因此在消息转发时要让Alice与Bob计算的共享密钥需相同，并且由于Alice的密钥每次更换，若不知道给Bob发送的公钥对应的私钥，也不可能解密成功。</p>
+<p>我们可控的点为：</p>
+<ul>
+<li>给Alice的Bob rb</li>
+<li>给Bob的Alice ra</li>
+<li>给Bob的Alice publickey</li>
+</ul>
+<p>因为Bob的公钥无法改变，给alice发送的消息只有rb可控，但由于还要进行哈希计算，所以难以控制，所以尝试直接将Bob发送的rb转发，试图通过给Bob的ra与publickey来实现相等</p>
+<p>则目标就是</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hash(ra * G) * AlicePublickey + ra * G = hash(R) * Publickey + R</span><br></pre></td></tr></table></figure>
+<p>（以下为我在比赛时第一时间的想法）</p>
+<p>将左边看作一个整体点P</p>
+<p>若先选取R，则</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Publickey = (P - R) * invert(hash(R) , n) = xG</span><br></pre></td></tr></table></figure>
+<p>但无法知道x的值，则最后一步Bob发送的flag无法解密。</p>
+<p>若先选取Publickey，几乎没法确定R。</p>
+<p>所以想到找低阶点，若Publickey的阶低，则x可以通过爆破得到，同时，也可以通过爆破来确定R。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">R = P - i * Publickey</span><br></pre></td></tr></table></figure>
+<p>如果hash(R) % order = i，则能得到满足条件的R。</p>
+<p>对于选取的一个低阶点，计算order次，碰撞不成功的概率为(1 - 1/order)^order &gt; 1/e = 0.37</p>
+<p>所以大概成功率会大于60%</p>
+<p>但SM2使用的曲线安全性很高，阶为素数，无法在这条曲线上找低阶点。</p>
+<p>但是Bob并不检查点的合法性，可以寻找不在曲线上的低阶点</p>
+<p>寻找方法为将b+1,计算一个点g的阶，若阶order有小质因子k，则计算(order // k) * g 则为想要的k阶点</p>
+<p>这样，虽然是两个不在一条曲线上的点运算，但是它也一定能算出一个结果R，只不过这个结果R在第三条曲线上，但这里的R仅仅只用到了这一次，因此不会有其他麻烦。</p>
+<p>而Publickey还会用于下面对flag的加密，用不在曲线上的点仍能够实现加密，但是解密时就得不到k* Publickey了</p>
+<p>原本解密时，通过privatekey<em>C1可以得到加密使用的点，但因为我们的Publickey根本就不是从G得到的，因此无法直接得到加密使用的点。但由于Publickey的阶并不大，k </em> Publickey的可能值仅有order个，爆破order次，即可从中找到明文。</p>
+<p>exp：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> socketserver</span><br><span class="line"><span class="keyword">import</span> os, signal</span><br><span class="line"><span class="keyword">import</span> threading</span><br><span class="line"><span class="keyword">import</span> string, binascii</span><br><span class="line"><span class="keyword">from</span> hashlib <span class="keyword">import</span> sha256</span><br><span class="line"><span class="keyword">from</span> Crypto.Util <span class="keyword">import</span> number</span><br><span class="line"><span class="keyword">from</span> KeyExchange <span class="keyword">import</span> KeyExchange</span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> gmssl <span class="keyword">import</span> func, sm3</span><br><span class="line"><span class="keyword">import</span> string</span><br><span class="line">KE = KeyExchange()</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sm3_hash_str</span>(<span class="params">msg</span>):</span></span><br><span class="line">    <span class="keyword">return</span> sm3.sm3_hash(func.bytes_to_list(msg.encode()))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">to_point</span>(<span class="params">x , y</span>):</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">hex</span>(x)[<span class="number">2</span>:].rjust(<span class="number">64</span> , <span class="string">&#x27;0&#x27;</span>) + <span class="built_in">hex</span>(y)[<span class="number">2</span>:].rjust(<span class="number">64</span> , <span class="string">&#x27;0&#x27;</span>)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">to_int</span>(<span class="params">g</span>):</span></span><br><span class="line">    x = <span class="built_in">int</span>(g[:<span class="number">64</span>] , <span class="number">16</span>)</span><br><span class="line">    y = <span class="built_in">int</span>(g[<span class="number">64</span>:] , <span class="number">16</span>)</span><br><span class="line">    <span class="keyword">return</span> x , y</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fu</span>(<span class="params">g</span>):</span></span><br><span class="line">    x ,y = to_int(g)</span><br><span class="line">    y = <span class="number">0xFFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFF</span> - y</span><br><span class="line">    <span class="keyword">return</span> to_point(x , y)</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Task</span>(<span class="params">socketserver.BaseRequestHandler</span>):</span></span><br><span class="line">    index = <span class="number">0</span></span><br><span class="line">    times = <span class="number">0</span></span><br><span class="line">    _key = <span class="literal">None</span></span><br><span class="line">    _rand_iter = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_recvall</span>(<span class="params">self</span>):</span></span><br><span class="line">        data = self.request.recv(<span class="number">1024</span>)</span><br><span class="line">        <span class="keyword">return</span> data.strip()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">send</span>(<span class="params">self, msg, newline=<span class="literal">True</span></span>):</span></span><br><span class="line">        <span class="keyword">if</span> newline:</span><br><span class="line">            msg += <span class="string">b&#x27;\n&#x27;</span></span><br><span class="line">        self.request.sendall(msg)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_target</span>(<span class="params">self,peer_pk , peer_T</span>):</span></span><br><span class="line">        peer_h = <span class="built_in">int</span>(sm3_hash_str(peer_T), <span class="number">16</span>) % <span class="built_in">int</span>(KE.ecc_table[<span class="string">&#x27;n&#x27;</span>], base=<span class="number">16</span>)</span><br><span class="line">        peer_hP = KE._kg(peer_h, peer_pk)</span><br><span class="line">        peer_ThP = KE._add_point(peer_T, peer_hP)</span><br><span class="line">        peer_ThP = KE._convert_jacb_to_nor(peer_ThP)</span><br><span class="line">        <span class="keyword">return</span> peer_ThP</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">attack</span>(<span class="params">self, tempg</span>):</span></span><br><span class="line">        tempx = <span class="number">108369860142849285519512209608941191631731475365137473063138228543102305365193</span></span><br><span class="line">        tempy = <span class="number">17711224374516220167029583974392567739229554851195153447898777402617425143845</span></span><br><span class="line">        temp = to_point(tempx , tempy)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1783</span>):</span><br><span class="line">            </span><br><span class="line">            tempc = KE._kg(i , temp)</span><br><span class="line">            tempc = fu(tempc)</span><br><span class="line">            r = KE._convert_jacb_to_nor(KE._add_point(tempg , tempc))</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">int</span>(sm3_hash_str(r), <span class="number">16</span>) % <span class="built_in">int</span>(KE.ecc_table[<span class="string">&#x27;n&#x27;</span>], base=<span class="number">16</span>) % <span class="number">1783</span> == i:</span><br><span class="line">                <span class="keyword">if</span> KE._kg(<span class="built_in">int</span>(sm3_hash_str(r), <span class="number">16</span>) % <span class="built_in">int</span>(KE.ecc_table[<span class="string">&#x27;n&#x27;</span>], base=<span class="number">16</span>), temp) != <span class="literal">None</span>:</span><br><span class="line">                    rg = KE._convert_jacb_to_nor(KE._add_point(r , KE._kg(<span class="built_in">int</span>(sm3_hash_str(r), <span class="number">16</span>) % <span class="built_in">int</span>(KE.ecc_table[<span class="string">&#x27;n&#x27;</span>], base=<span class="number">16</span>), temp)))</span><br><span class="line">                    <span class="keyword">break</span></span><br><span class="line">        <span class="keyword">assert</span> self.get_target(temp , r) == tempg</span><br><span class="line">        <span class="keyword">return</span> temp , r</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">decrypt</span>(<span class="params">msg</span>):</span></span><br><span class="line">        tempx = <span class="number">108369860142849285519512209608941191631731475365137473063138228543102305365193</span></span><br><span class="line">        tempy = <span class="number">17711224374516220167029583974392567739229554851195153447898777402617425143845</span></span><br><span class="line">        temp = to_point(tempx , tempy)</span><br><span class="line">        len_2 = <span class="number">64</span> * <span class="number">2</span></span><br><span class="line">        len_3 = len_2 + <span class="number">64</span></span><br><span class="line">        C2 = msg[len_3:]</span><br><span class="line">        <span class="keyword">for</span> k <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1783</span>):</span><br><span class="line">            xy = KE._kg(k, temp)</span><br><span class="line">            <span class="keyword">if</span> xy != <span class="literal">None</span>:</span><br><span class="line">                x2 = xy[<span class="number">0</span>:<span class="number">64</span>]</span><br><span class="line">                y2 = xy[<span class="number">64</span>:<span class="number">2</span> * <span class="number">64</span>]</span><br><span class="line">                ml = <span class="built_in">len</span>(C2)</span><br><span class="line">                t = sm3.sm3_kdf(xy.encode(<span class="string">&#x27;utf8&#x27;</span>), ml / <span class="number">2</span>)</span><br><span class="line">                temp = number.long_to_bytes(<span class="built_in">int</span>(C2 , <span class="number">16</span>) ^ <span class="built_in">int</span>(t , <span class="number">16</span>))</span><br><span class="line">                <span class="keyword">if</span> temp[<span class="number">0</span>] == <span class="built_in">ord</span>(<span class="string">&#x27;B&#x27;</span>):</span><br><span class="line">                    <span class="built_in">print</span>(temp)</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">recv</span>(<span class="params">self, prompt=<span class="string">b&#x27;&#x27;</span></span>):</span></span><br><span class="line">        self.send(prompt, newline=<span class="literal">False</span>)</span><br><span class="line">        <span class="keyword">return</span> self._recvall()</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">handle</span>(<span class="params">self</span>):</span></span><br><span class="line">            self.send(<span class="string">b&#x27;Hi, Alice?&#x27;</span>)</span><br><span class="line">            p = remote(<span class="string">&#x27;172.16.9.45&#x27;</span> , <span class="number">13334</span>)</span><br><span class="line">            data = self._recvall()</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&#x27;Alice-sl&#x27;</span> , data)</span><br><span class="line">            P_a, T_a = data[:<span class="number">128</span>].decode(),  data[<span class="number">128</span>:].decode()</span><br><span class="line">            Alice_THP = self.get_target(P_a , T_a)</span><br><span class="line"></span><br><span class="line">            P_sl , T_sl = self.attack(Alice_THP)</span><br><span class="line"></span><br><span class="line">            p.recvline()</span><br><span class="line">            p.sendline(P_sl + T_sl)</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&#x27;sl-Bob&#x27;</span>,P_sl + T_sl)</span><br><span class="line">            </span><br><span class="line">            </span><br><span class="line">            temp = p.recvline()[:-<span class="number">1</span>]</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&#x27;Bob-sl&#x27;</span>,temp)</span><br><span class="line">            </span><br><span class="line">            </span><br><span class="line">            self.send(temp)</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&#x27;sl-Alice&#x27;</span> , temp)</span><br><span class="line">            </span><br><span class="line">            </span><br><span class="line">            msg = self._recvall()</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&#x27;Alice-sl&#x27;</span> , msg)</span><br><span class="line">            </span><br><span class="line">            p.sendline(msg)</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&#x27;sl-Bob&#x27;</span> , msg)</span><br><span class="line">            temp = p.recvline()</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&#x27;Bob-sl&#x27;</span> , temp)</span><br><span class="line">            self.decrypt(temp)</span><br><span class="line"></span><br><span class="line">            self.request.close()</span><br><span class="line">            p.close()</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ForkedServer</span>(<span class="params">socketserver.ForkingMixIn, socketserver.TCPServer</span>):</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    HOST, PORT = <span class="string">&#x27;0.0.0.0&#x27;</span>, <span class="number">1118</span></span><br><span class="line">    server = ForkedServer((HOST, PORT), Task)</span><br><span class="line">    server.allow_reuse_address = <span class="literal">True</span></span><br><span class="line">    server.serve_forever()</span><br><span class="line"> </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>但这种思路看着太乱了，完全不按题目正常的流程走，比赛时打了一整页草稿才写出来。 但是赛后跟V师傅交流了一下，发现上面有一步出了问题 当先任意选取R时，</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Publickey = (P - R) * invert(hash(R) , n) = xG</span><br></pre></td></tr></table></figure>
+<p>这条式子其实是可以算出x的 最初认为P – R是一个未知的值，但是完全可以取R = P – G 则x = invert(hash(R) , n) 接着直接解密即可。</p>
+<h2 id="agid">agid</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> agid</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">from</span> gmssl.optimized_field_elements <span class="keyword">import</span> FQ2, FQ</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">def check_auth():</span></span><br><span class="line"><span class="string">    bob = agid.Verifier()</span></span><br><span class="line"><span class="string">    identity = bob.allow_identity[0]</span></span><br><span class="line"><span class="string">    alice = agid.Prover(identity)</span></span><br><span class="line"><span class="string">    Ppub, Qpub, H = bob.setup()</span></span><br><span class="line"><span class="string">    Rid = bob.keygen(identity)</span></span><br><span class="line"><span class="string">    V = bob.gpkgen()</span></span><br><span class="line"><span class="string">    W = bob.gskgen(identity)</span></span><br><span class="line"><span class="string">    U1, U2, U3, S1, S2, T1, T2, T3 = alice.commit(Rid, W, Ppub, Qpub, H)</span></span><br><span class="line"><span class="string">    c = bob.challenge(U1, U2, U3, S1, S2, T1, T2, T3)</span></span><br><span class="line"><span class="string">    s1, s2, s3, s4 = alice.prove(c)</span></span><br><span class="line"><span class="string">    assert bob.verify(s1, s2, s3, s4)</span></span><br><span class="line"><span class="string">check_server()</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">safe_eval</span>(<span class="params">data</span>):</span></span><br><span class="line">    data = data.replace(<span class="string">&#x27; &#x27;</span>, <span class="string">&#x27;&#x27;</span>).strip()</span><br><span class="line">    <span class="keyword">if</span> re.match(<span class="string">r&quot;^[0-9,()\[\]]+$&quot;</span>, data) <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;This is just for simpler data transmission,\nPlease do not consider attacking here.&#x27;</span>)</span><br><span class="line">        exit()</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="comment"># This is just for simpler data transmission, please do not consider attacking here</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">eval</span>(data)</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;eval fault.&#x27;</span>)</span><br><span class="line">    exit()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">server = agid.Verifier()</span><br><span class="line"></span><br><span class="line">Ppub, Qpub, H = server.setup()</span><br><span class="line">V = server.gpkgen()</span><br><span class="line"><span class="built_in">print</span>((Ppub, Qpub, H, V))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Give me your identity&quot;</span>)</span><br><span class="line">identity = <span class="built_in">input</span>(<span class="string">&quot;&gt;&gt;&gt;&quot;</span>).strip()</span><br><span class="line">Rid = server.keygen(identity)</span><br><span class="line">W = server.gskgen(identity)</span><br><span class="line"><span class="built_in">print</span>((Rid, W))</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Give me U1, U2, U3, S1, S2, T1, T2, T3&quot;</span>)</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    U1, U2, U3, S1, S2, T1, T2, T3 = [[FQ2(y) <span class="keyword">if</span> <span class="built_in">type</span>(y) <span class="keyword">is</span> <span class="built_in">list</span> <span class="keyword">else</span> FQ(y) <span class="keyword">for</span> y <span class="keyword">in</span> x] <span class="keyword">for</span> x <span class="keyword">in</span> safe_eval(<span class="built_in">input</span>(<span class="string">&quot;&gt;&gt;&gt;&quot;</span>))]</span><br><span class="line"><span class="keyword">except</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;eval error.&#x27;</span>)</span><br><span class="line">    exit()</span><br><span class="line"></span><br><span class="line">c = server.challenge(U1, U2, U3, S1, S2, T1, T2, T3)</span><br><span class="line"><span class="built_in">print</span>(c)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Give me s1, s2, s3, s4&quot;</span>)</span><br><span class="line">data = <span class="built_in">input</span>(<span class="string">&quot;&gt;&gt;&gt;&quot;</span>)</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    s1, s2, s3, s4 = safe_eval(data)</span><br><span class="line"><span class="keyword">except</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;format error.&#x27;</span>)</span><br><span class="line">    exit()</span><br><span class="line"><span class="keyword">if</span> server.verify(s1, s2, s3, s4):</span><br><span class="line">    <span class="built_in">print</span>(FLAG)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;NoNoNo...&#x27;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>题目中用的gmssl并不是pip直接下载的那个，需要去github找另一个</p>
+<p>题目是一个认证系统，如果有identity即可多得到两个数据</p>
+<p>上面check_auth为正常的认证流程</p>
+<p>我们需要做的是没有identity的情况下认证成功</p>
+<p>看上去需要给12个变量，满足5个方程。十分复杂。</p>
+<p>但实际上全写出来，真的很简单</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">eq1_left = ate.pairing(U2, U1)</span><br><span class="line">eq1_right = ate.pairing(ec.G2, ec.G1)</span><br><span class="line"><span class="keyword">assert</span> eq1_left == eq1_right</span><br></pre></td></tr></table></figure>
+<p>虽然有双线性对，一开始还以为需要用到双线性对的限制，但是因为懒，就直接U2 = G2 ， U1 = G1就完事了</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">eq2_left = ate.pairing(S2, S1)</span><br><span class="line">eq2_right = ate.pairing(self.V, ec.G1)</span><br><span class="line"><span class="keyword">assert</span> eq2_left == eq2_right</span><br></pre></td></tr></table></figure>
+<p>第二个同理，S2 = V ， S1 = G1</p>
+<p>下面的则是要求</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">T1 = (s1 + s2*sm + h*s3)G1 - c * U3</span><br><span class="line">T2 = (s3 * h)G1 + s4 * U1 - c * U3 = (s3 * h + s4)G1 - c * U3</span><br><span class="line">T3 = (s1 + s * s2)G1 - c * S1 = (s1 + s * s2 - c)G1</span><br></pre></td></tr></table></figure>
+<p>由于预先不知道c的值，所以在T的构造里必须把c全消掉。</p>
+<p>点为0可能出现一些神秘问题（上一道题是这样的，这题库不一样，也不知道会不会）。但是不为0完全也能构造</p>
+<p>首先T3处，s未知，需要用s2 * Qpub 得到 s * s2 * G1，取s1 = c抵消c。s2可任意</p>
+<p>因此T3 = s2 * Ppub</p>
+<p>T2处方便起见U3 = G1，s3 * h <em>G1 用 s3 </em> H得到，同样让s4 = c抵消c，s3可任意</p>
+<p>因此T2 = s3 * H</p>
+<p>T1处几个参数已固定</p>
+<p>T1 = s3 * H + s2 * Qpub</p>
+<p>然后任意取值即可</p>
+<p>exp中任意参数全取了1</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> gmssl.optimized_curve <span class="keyword">as</span> ec</span><br><span class="line"><span class="keyword">import</span> gmssl.optimized_pairing <span class="keyword">as</span> ate</span><br><span class="line"><span class="keyword">import</span> agid</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">from</span> gmssl.optimized_field_elements <span class="keyword">import</span> FQ2, FQ</span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">p = remote(<span class="string">&#x27;172.16.9.45&#x27;</span> , <span class="number">18585</span>)</span><br><span class="line">recv = p.recvline()[:-<span class="number">1</span>]</span><br><span class="line">Ppub , Qpub , H , V = [[FQ2(y) <span class="keyword">if</span> <span class="built_in">type</span>(y) <span class="keyword">is</span> <span class="built_in">list</span> <span class="keyword">else</span> FQ(y) <span class="keyword">for</span> y <span class="keyword">in</span> x] <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">eval</span>(recv)]</span><br><span class="line">p.recvuntil(<span class="string">&#x27;&gt;&gt;&gt;&#x27;</span>)</span><br><span class="line">p.sendline(<span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">p.recvuntil(<span class="string">&#x27;&gt;&gt;&gt;&#x27;</span>)</span><br><span class="line">U1 = ec.G1</span><br><span class="line">U2 = ec.G2</span><br><span class="line">U3 = ec.G1</span><br><span class="line">S1 = ec.G1</span><br><span class="line">S2 = V</span><br><span class="line">s2 = <span class="number">1</span></span><br><span class="line">s3 = <span class="number">1</span></span><br><span class="line">T3 = ec.multiply(Ppub , s2)</span><br><span class="line">T2 = ec.multiply(H , s3)</span><br><span class="line">T1 = ec.add(ec.multiply(Qpub , s2) , T2)</span><br><span class="line">temp = (U1,U2,U3,S1,S2,T1,T2,T3)</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">str</span>(temp))</span><br><span class="line">p.sendline(<span class="built_in">str</span>(temp))</span><br><span class="line">c = <span class="built_in">int</span>(p.recvline()[:-<span class="number">1</span>])</span><br><span class="line">s1 = c</span><br><span class="line">s4 = c</span><br><span class="line">slist = (s1,s2,s3,s4)</span><br><span class="line">p.sendline(<span class="built_in">str</span>(slist))</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CTF/" rel="tag"># CTF</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2021/10/07/TCTF-0CTF2021-final-EzHash/" rel="next" title="[TCTF/0CTF2021 final]EzHash 复现">
+      [TCTF/0CTF2021 final]EzHash 复现 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#impersonation"><span class="nav-number">1.</span> <span class="nav-text">impersonation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#agid"><span class="nav-number">2.</span> <span class="nav-text">agid</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="shallow"
+      src="/images/header.jpg">
+  <p class="site-author-name" itemprop="name">shallow</p>
+  <div class="site-description" itemprop="description">Crypto/CTFs/Mathematics</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/shal10w" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;shal10w" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.wootec.top/" title="https:&#x2F;&#x2F;www.wootec.top" rel="noopener" target="_blank">Reverier</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cor1e.cn/" title="https:&#x2F;&#x2F;www.cor1e.cn" rel="noopener" target="_blank">Cor1e</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/arttnba3" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;arttnba3" rel="noopener" target="_blank">arttnba3</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/qq_39679772" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_39679772" rel="noopener" target="_blank">zjx带佬</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/mer_cer" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;mer_cer" rel="noopener" target="_blank">mercer</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://eqqie.cn/" title="https:&#x2F;&#x2F;eqqie.cn" rel="noopener" target="_blank">eqqie</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shallow</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

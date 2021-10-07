@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="tctf final2021唯一没做出来的题，属于是毫无思路，看了paper越发觉得思路很有借鉴意义，复现一下">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[TCTF&#x2F;0CTF2021 final]EzHash 复现">
+<meta property="og:url" content="http://yoursite.com/2021/10/07/TCTF-0CTF2021-final-EzHash/index.html">
+<meta property="og:site_name" content="shallow&#39;s blog">
+<meta property="og:description" content="tctf final2021唯一没做出来的题，属于是毫无思路，看了paper越发觉得思路很有借鉴意义，复现一下">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/images/TCTF-0CTF2021-final-EzHash/hashdefine.png">
+<meta property="og:image" content="http://yoursite.com/images/TCTF-0CTF2021-final-EzHash/matrix.png">
+<meta property="og:image" content="http://yoursite.com/images/TCTF-0CTF2021-final-EzHash/matrix1.png">
+<meta property="og:image" content="http://yoursite.com/images/TCTF-0CTF2021-final-EzHash/matrix2.png">
+<meta property="og:image" content="http://yoursite.com/images/TCTF-0CTF2021-final-EzHash/equtation1.png">
+<meta property="og:image" content="http://yoursite.com/images/TCTF-0CTF2021-final-EzHash/gaussian.png">
+<meta property="og:image" content="http://yoursite.com/images/TCTF-0CTF2021-final-EzHash/matrix3.png">
+<meta property="article:published_time" content="2021-10-07T04:05:24.000Z">
+<meta property="article:modified_time" content="2021-10-07T04:57:22.749Z">
+<meta property="article:author" content="shallow">
+<meta property="article:tag" content="CTF">
+<meta property="article:tag" content="Hash">
+<meta property="article:tag" content="Mathematics">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/TCTF-0CTF2021-final-EzHash/hashdefine.png">
+
+<link rel="canonical" href="http://yoursite.com/2021/10/07/TCTF-0CTF2021-final-EzHash/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>[TCTF/0CTF2021 final]EzHash 复现 | shallow's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">shallow's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/10/07/TCTF-0CTF2021-final-EzHash/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="shallow">
+      <meta itemprop="description" content="Crypto/CTFs/Mathematics">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="shallow's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [TCTF/0CTF2021 final]EzHash 复现
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-10-07 12:05:24 / 修改时间：12:57:22" itemprop="dateCreated datePublished" datetime="2021-10-07T12:05:24+08:00">2021-10-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/" itemprop="url" rel="index"><span itemprop="name">CTF</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>tctf final2021唯一没做出来的题，属于是毫无思路，看了paper越发觉得思路很有借鉴意义，复现一下</p>
+<span id="more"></span>
+<h2 id="题目核心代码">题目核心代码</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ezhash</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        self.p = <span class="number">328145541634163431929233386535821861121</span></span><br><span class="line">        self.i = <span class="number">96858741233065729363697642301435517926</span></span><br><span class="line">        <span class="keyword">assert</span> <span class="built_in">pow</span>(self.i, <span class="number">2</span>, self.p) == self.p - <span class="number">1</span></span><br><span class="line">        self.l = <span class="number">5</span></span><br><span class="line">        self.g = [</span><br><span class="line">            [[<span class="number">1</span>, -<span class="number">2</span> * self.i], [-<span class="number">2</span> * self.i, <span class="number">1</span>]],</span><br><span class="line">            [[<span class="number">1</span>, -<span class="number">2</span>], [<span class="number">2</span>, <span class="number">1</span>]],</span><br><span class="line">            [[<span class="number">1</span> - <span class="number">2</span> * self.i, <span class="number">0</span>], [<span class="number">0</span>, <span class="number">1</span> + <span class="number">2</span> * self.i]],</span><br><span class="line">            [[<span class="number">1</span> + <span class="number">2</span> * self.i, <span class="number">0</span>], [<span class="number">0</span>, <span class="number">1</span> - <span class="number">2</span> * self.i]],</span><br><span class="line">            [[<span class="number">1</span>, <span class="number">2</span>], [-<span class="number">2</span>, <span class="number">1</span>]],</span><br><span class="line">            [[<span class="number">1</span>, <span class="number">2</span> * self.i], [<span class="number">2</span> * self.i, <span class="number">1</span>]]</span><br><span class="line">        ]</span><br><span class="line">        self.pi = [</span><br><span class="line">            [<span class="number">1</span>, <span class="number">0</span>, <span class="number">5</span>, <span class="number">4</span>, <span class="number">3</span>, <span class="number">2</span>],</span><br><span class="line">            [<span class="number">0</span>, <span class="number">5</span>, <span class="number">4</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>],</span><br><span class="line">            [<span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">5</span>, <span class="number">4</span>, <span class="number">3</span>],</span><br><span class="line">            [<span class="number">4</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">5</span>],</span><br><span class="line">            [<span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">5</span>, <span class="number">4</span>]</span><br><span class="line">        ]</span><br><span class="line">        self.x = [[getRandomRange(<span class="number">1</span>, self.p) <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>)] <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>)]</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">base</span>(<span class="params">self, n</span>):</span></span><br><span class="line">        seq = []</span><br><span class="line">        <span class="keyword">while</span> n:</span><br><span class="line">            seq.append(n % self.l)</span><br><span class="line">            n //= self.l</span><br><span class="line">        <span class="keyword">return</span> seq</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">digest</span>(<span class="params">self, msg</span>):</span></span><br><span class="line">        seq = self.base(<span class="built_in">int</span>(msg.<span class="built_in">hex</span>(), <span class="number">16</span>))</span><br><span class="line">        g_last = self.g[<span class="number">1</span>]</span><br><span class="line">        r = [[<span class="number">1</span>, <span class="number">0</span>], [<span class="number">0</span>, <span class="number">1</span>]]</span><br><span class="line">        <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(seq)):</span><br><span class="line">            g_cur = self.g[self.pi[seq[_]][self.g.index(g_last)]]</span><br><span class="line">            (a, b), (c, d) = r[<span class="number">0</span>], r[<span class="number">1</span>]</span><br><span class="line">            (e, f), (g, h) = g_cur[<span class="number">0</span>], g_cur[<span class="number">1</span>]</span><br><span class="line">            r[<span class="number">0</span>][<span class="number">0</span>] = (a * e + b * g) % self.p</span><br><span class="line">            r[<span class="number">0</span>][<span class="number">1</span>] = (a * f + b * h) % self.p</span><br><span class="line">            r[<span class="number">1</span>][<span class="number">0</span>] = (c * e + d * g) % self.p</span><br><span class="line">            r[<span class="number">1</span>][<span class="number">1</span>] = (c * f + d * h) % self.p</span><br><span class="line">            g_last = g_cur</span><br><span class="line">        <span class="keyword">return</span> r</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">check</span>(<span class="params">self, msg</span>):</span></span><br><span class="line">        d = self.digest(msg)</span><br><span class="line">        s = [inverse(d[<span class="number">0</span>][<span class="number">0</span>], self.p) * self.x[<span class="number">0</span>][<span class="number">0</span>] % self.p, \</span><br><span class="line">        inverse(d[<span class="number">0</span>][<span class="number">1</span>], self.p) * self.x[<span class="number">0</span>][<span class="number">1</span>] % self.p, \</span><br><span class="line">        inverse(d[<span class="number">1</span>][<span class="number">0</span>], self.p) * self.x[<span class="number">1</span>][<span class="number">0</span>] % self.p, \</span><br><span class="line">        inverse(d[<span class="number">1</span>][<span class="number">1</span>], self.p) * self.x[<span class="number">1</span>][<span class="number">1</span>] % self.p]</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(<span class="built_in">list</span>(<span class="built_in">set</span>(s))) == <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Task</span>(<span class="params">socketserver.BaseRequestHandler</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">handle</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            signal.signal(signal.SIGALRM, self.timeout_handler)</span><br><span class="line">            signal.alarm(<span class="number">30</span>)</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> self.proof_of_work():</span><br><span class="line">                self.dosend(<span class="string">&#x27;You must pass the PoW!&#x27;</span>)</span><br><span class="line">                <span class="keyword">return</span></span><br><span class="line">            signal.alarm(<span class="number">10</span>)</span><br><span class="line">            h = ezhash()</span><br><span class="line">            self.dosend(<span class="string">&#x27;x: &#x27;</span> + <span class="built_in">str</span>(h.x))</span><br><span class="line">            msg = self.request.recv(<span class="number">1024</span>).strip()</span><br><span class="line">            msg = <span class="built_in">bytes</span>.fromhex(msg.decode(<span class="string">&#x27;utf-8&#x27;</span>))</span><br><span class="line">            <span class="keyword">if</span> h.check(msg):</span><br><span class="line">                self.dosend(flag)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                self.dosend(<span class="string">&#x27;Good luck!&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>删掉了无关紧要的交互函数，大致是要在1024位内，将一个随机矩阵用6个矩阵基相乘表示。</p>
+<h2 id="比赛中的尝试">比赛中的尝试</h2>
+<p>首先，这里有三个常数，p为模，由于后面也可能涉及离散对数，分解一下p-1,发现并不算很光滑。i<sup>2</sup> = -1 mod p。结合i的符号，很容易让人想到i相当于模p下的虚数单位i，也就是说这个矩阵我们不该将其看作是模p的普通矩阵，而应当将其看成一个复数矩阵。l = 5，也就是这6个矩阵的行列式（毕竟后面要将六个矩阵相乘，乘法中矩阵特征最容易计算的也就是行列式了）。</p>
+<p>观察矩阵，可以发现这些矩阵很好的对称性质，对角线上的两个数共轭，反对角线上的两个数实部相反，虚部相同。很容易想到这些矩阵也许成群，将其乘一下果然仍然有这一性质。因此，第一步肯定是很明朗的，需要将要求的随机矩阵化为上述形式，这一步很简单就能够做到。其次，普通矩阵需要四个数字才能够表示，但是这无法表示我们说的对称性质，因此将矩阵用第一列的两个数的实部和虚部的四个数字组成的四元向量来表示，能够表现出上面的对称性质，尽管正常的矩阵仍然需要四个数字，但是我们的基都能够有两个位置是0，能够更方便。但接下来的分解就非常困难，由于是乘法，在模p下，离散对数问题绝对是大问题，没法解决，即使能够算出，往往需要的矩阵个数也远远超过1024了。</p>
+<h2 id="比赛后的思考">比赛后的思考</h2>
+<p>比赛后才知道是paper题，而且这真的是个在md5被攻破以后提出又被废弃的hash方案LPS，查hash就能查到（鬼知道啊，这一看还以为只是考线代复变的，以为题目乱取的，居然还真有人拿这当hash方案）首先是dbt在discord找到了出题人说参考的《Full Cryptanalysis of LPS and Morgenstern Hash Functions》<sup>[1]</sup>但这篇很多都没讲清楚，在参考文献中又找到了一篇《Collisions for the LPS expander graph hash function》<sup>[2]</sup>两篇结合加上一点自己的想法就可以做出这道题了。第二篇是注重碰撞，而碰撞只需要分解单位矩阵I即可，而第一个注重找原像，也就是题目中的分解。</p>
+<h2 id="哈希方案lps">哈希方案LPS</h2>
+<p><img src="/images/TCTF-0CTF2021-final-EzHash/hashdefine.png" /></p>
+<p>题目中选取的G为PSL(2,Fp)（模p的2*2矩阵），S的选取为那6个矩阵。</p>
+<p>这六个矩阵是由一条方程组生成的</p>
+<p><img src="/images/TCTF-0CTF2021-final-EzHash/matrix.png" /></p>
+<p>该方程共有<span class="math inline">\(\sum_{d|l}d\)</span>个解，证明可见参考文献[3]中的第二章内容。在这里l为5,也就是有6个解，则六个矩阵则由这6个解按照如下方式生成</p>
+<p><img src="/images/TCTF-0CTF2021-final-EzHash/matrix1.png" /></p>
+<p>当我们将kM看作于M相等时，这些矩阵满足上面的条件。</p>
+<h2 id="分解思路">分解思路</h2>
+<p>不管是寻求该哈希函数的碰撞，还是找一个输出的原像，它们本质上都是寻找一个矩阵的分解。（找碰撞等价于找单位矩阵的分解，找原像则是找任意矩阵的分解也就是题目中我们要做的）但如果在PSL(2,Fp)上，离散对数问题是没法解决的，所以文献[2]中提供的思路是将其转化到Z[i]上，在Z[i]上进行分解，分解完后便自然在PSL(2, Fp)上成立。因此问题转化为两步，即PSL到Z[i]的转化与Z[i]上的分解。</p>
+<h2 id="分解前准备的工具函数与变量">分解前准备的工具函数与变量</h2>
+<p>题目中的全局变量</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">p = <span class="number">328145541634163431929233386535821861121</span></span><br><span class="line">i = <span class="number">96858741233065729363697642301435517926</span></span><br><span class="line">l = <span class="number">5</span></span><br><span class="line">g = [</span><br><span class="line">    [ <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>,-<span class="number">2</span>],</span><br><span class="line">    [ <span class="number">1</span>, <span class="number">0</span>,-<span class="number">2</span>, <span class="number">0</span>],</span><br><span class="line">    [ <span class="number">1</span>,-<span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">    [ <span class="number">1</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">    [ <span class="number">1</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>],</span><br><span class="line">    [ <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>]]</span><br><span class="line">ZERO = [<span class="number">1</span> , <span class="number">0</span> , <span class="number">0</span> , <span class="number">0</span>]</span><br></pre></td></tr></table></figure>
+<p>这里g是将矩阵转化为四元向量后的形式，并且g[i] = g[5-i]<sup>-1</sup>，后面求逆很方便。</p>
+<p>矩阵两种形式互相转化的函数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">PSLp_to_Zi</span>(<span class="params">M</span>):</span></span><br><span class="line">    a = (M[<span class="number">0</span>][<span class="number">0</span>] + M[<span class="number">1</span>][<span class="number">1</span>]) * inverse(<span class="number">2</span> , p) % p</span><br><span class="line">    b = (M[<span class="number">0</span>][<span class="number">0</span>] - M[<span class="number">1</span>][<span class="number">1</span>]) * inverse(<span class="number">2</span>*i , p) % p</span><br><span class="line">    c = (M[<span class="number">1</span>][<span class="number">0</span>] - M[<span class="number">0</span>][<span class="number">1</span>]) * inverse(<span class="number">2</span> , p) % p</span><br><span class="line">    d = (M[<span class="number">1</span>][<span class="number">0</span>] + M[<span class="number">0</span>][<span class="number">1</span>]) * inverse(<span class="number">2</span>*i , p) % p</span><br><span class="line">    <span class="keyword">return</span> [a,b,c,d]</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Zi_to_PSLp</span>(<span class="params">M</span>):</span></span><br><span class="line">    a,b,c,d = M</span><br><span class="line">    res = [[<span class="number">0</span>,<span class="number">0</span>] , [<span class="number">0</span>,<span class="number">0</span>]]</span><br><span class="line">    res[<span class="number">0</span>][<span class="number">0</span>] = (a+b*i)%p</span><br><span class="line">    res[<span class="number">0</span>][<span class="number">1</span>] = (-c+d*i)%p</span><br><span class="line">    res[<span class="number">1</span>][<span class="number">0</span>] = (c+d*i)%p</span><br><span class="line">    res[<span class="number">1</span>][<span class="number">1</span>] = (a-b*i)%p</span><br><span class="line">    <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<p>乘法（选择用四元向量的形式）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">mul</span>(<span class="params">A ,B</span>):</span></span><br><span class="line">    a1,b1,c1,d1 = [<span class="built_in">int</span>(i) <span class="keyword">for</span> i <span class="keyword">in</span> A]</span><br><span class="line">    a2,b2,c2,d2 = [<span class="built_in">int</span>(i) <span class="keyword">for</span> i <span class="keyword">in</span> B]</span><br><span class="line">    a3 = a1*a2 - b1*b2 - c1*c2 - d1*d2</span><br><span class="line">    b3 = a1*b2 + a2*b1 - c1*d2 + c2*d1</span><br><span class="line">    c3 = c1*a2 - d1*b2 + a1*c2 + b1*d2</span><br><span class="line">    d3 = c1*b2 + d1*a2 + n - b1*c2</span><br><span class="line">    <span class="keyword">return</span> [a3,b3,c3,d3]</span><br></pre></td></tr></table></figure>
+<h2 id="zi上的分解">Z[i]上的分解</h2>
+<p>首先需要知道解决这个问题的可行性。即为什么在Z[i]上分解会比在PSL(2, Fp)上容易。粗略的看，我们需要分解的是一个随机矩阵，本来就不是由6个矩阵基相乘得到的，有很大概率是无解的，但其实却不然，文献[3]中给出了一个定理，也就是满足如下条件的矩阵，一定能够被l+1个矩阵基分解。（证明方法还没看到，粗略的看应该是把复数域再扩展了一下，扩展出一个四元域，然后在上面证明，过段时间再补充）</p>
+<p><img src="/images/TCTF-0CTF2021-final-EzHash/matrix2.png" /></p>
+<p>如果我们知道有解，设F = g<sub>k0</sub>g<sub>k1</sub>...g<sub>kn</sub>,然后我们爆破六个矩阵基，分别计算Fg<sub>i</sub>的值，当 g<sub>i</sub> = g<sub>kn</sub><sup>-1</sup>时，F = 5g<sub>k0</sub>g<sub>k1</sub>...g<sub>kn-1</sub>，此时F中的四个数均能被5整除，即使存在i使得g<sub>i</sub> != g<sub>kn</sub><sup>-1</sup>时，F也能被5整除，那此时F的行列式仍然在下降，不断下降一定会下降到1.</p>
+<p>代码很简单</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">factor_Zi</span>(<span class="params">M</span>):</span></span><br><span class="line">    flist = []</span><br><span class="line">    testM = [i <span class="keyword">for</span> i <span class="keyword">in</span> M]</span><br><span class="line">    <span class="keyword">while</span> testM.count(<span class="number">0</span>) &lt; <span class="number">3</span>:</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">6</span>):</span><br><span class="line">            temp = mul(g[i], testM)</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">4</span>):</span><br><span class="line">                <span class="keyword">if</span> temp[j] % <span class="number">5</span> != <span class="number">0</span>:</span><br><span class="line">                    <span class="keyword">break</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                flist.append(<span class="number">5</span> - i)</span><br><span class="line">                testM = [i // <span class="number">5</span> <span class="keyword">for</span> i <span class="keyword">in</span> temp]</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> flist</span><br></pre></td></tr></table></figure>
+<p>这里的testM最后应当是[a , 0, 0, 0]的形式。</p>
+<h2 id="psl到zi的转化">PSL到Z[i]的转化</h2>
+<p>首先上面的分解提供了我们需要转化的最终结果，所以这一步的需求是，先将随机矩阵转化为四元向量 (A, B, C ,D),然后求解方程</p>
+<p><img src="/images/TCTF-0CTF2021-final-EzHash/equtation1.png" /></p>
+<p>只要找到满足条件的w，x，y，z和k就行（2k其实无所谓）</p>
+<p>显然这么多未知数相当难求解，主要是因为wzxy都有一次项与二次项，所以我们先考虑简单情况，即四元向量中，有两个位置是0的情况。</p>
+<p>不妨设C = D = 0</p>
+<p>原式化为 <span class="math display">\[
+(A^2+B^2)\lambda^2-l^{2k}+2\lambda(Aw+Bx)p + (w^2+x^2+y^2+z^2)p^2=0
+\]</span> 由于我们需要其他项全是正数，因此l<sup>2k</sup>需要较大，但k大了会导致分解后矩阵数增多，因此取k = log<sub>l</sub>(8p<sup>2</sup>)左右即可。</p>
+<p>可以看到对p的三个次数分别有三个括号，模p和p<sup>2</sup>依次解决。</p>
+<p>模p <span class="math display">\[
+\lambda = (\frac{l^{2k}}{A^2+B^2})^{\frac{1}{2}} mod\ p
+\]</span> 由于l=5是模p的二次剩余，所以这里必须要求A<sup>2</sup> + B<sup>2</sup>是模p的二次剩余才能有解。</p>
+<p>接着模p<sup>2</sup>有两个未知数。可以随便选取一个w，这里必须要让<span class="math inline">\(A\lambda+wp\)</span>是奇数，然后计算出x <span class="math display">\[
+x = \frac{-\frac{(A^2+B^2)\lambda^2-l^{2k}}{p}-2\lambda Aw}{2\lambda B} mod\ p
+\]</span> 将这些全部代回，只剩最后两个未知数y和z，它们需要满足(n太长了懒得写了，反正就是剩下的) <span class="math display">\[
+y^2 + z^2 = n
+\]</span> 可以证明，只要n模4余1,这条式子一定有解，（模4余3一定无解）<sup>[3]</sup>。</p>
+<p>当n模4余1时，这是一个经典问题，可以用连分数来求解y与z</p>
+<p><img src="/images/TCTF-0CTF2021-final-EzHash/gaussian.png" /></p>
+<p>由于需要计算-1开根，素数会相当容易，对于一般的N需要分解，如果数据过大可以撞出素数N即可。这里我是通过随机的x直接撞素数N</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ContinuedFraction</span>():</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self , numerator, denumerator</span>):</span></span><br><span class="line">        self.numberlist = []    <span class="comment">#number in continued fraction</span></span><br><span class="line">        self.fractionlist = []  <span class="comment">#the near fraction list</span></span><br><span class="line">        self.GenerateNumberList(numerator , denumerator)</span><br><span class="line">        self.GenerateFractionList()</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">GenerateNumberList</span>(<span class="params">self,numerator,denumerator</span>):</span></span><br><span class="line">        <span class="keyword">while</span> numerator != <span class="number">1</span>:</span><br><span class="line">            quotient = numerator//denumerator</span><br><span class="line">            remainder = numerator % denumerator</span><br><span class="line">            self.numberlist.append(quotient)</span><br><span class="line">            numerator = denumerator</span><br><span class="line">            denumerator = remainder</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">GenerateFractionList</span>(<span class="params">self</span>):</span></span><br><span class="line">        self.fractionlist.append([self.numberlist[<span class="number">0</span>] ,<span class="number">1</span> ])</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>,<span class="built_in">len</span>(self.numberlist)):</span><br><span class="line">            numerator = self.numberlist[i]</span><br><span class="line">            denumerator = <span class="number">1</span></span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(i):</span><br><span class="line">                temp = numerator</span><br><span class="line">                numerator = denumerator + numerator * self.numberlist[i-j-<span class="number">1</span>]</span><br><span class="line">                denumerator = temp</span><br><span class="line">            self.fractionlist.append([numerator,denumerator])</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">compute_square_modp</span>(<span class="params">a , p</span>):</span></span><br><span class="line">    <span class="keyword">assert</span> is_prime(p)</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">pow</span>(a , (p-<span class="number">1</span>)//<span class="number">2</span> , p) != <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line">    R = GF(p)</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">int</span>(R(a).nth_root(<span class="number">2</span>))</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">solve_yz</span>(<span class="params">n</span>):</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> is_prime(n) <span class="keyword">or</span> n % <span class="number">4</span> != <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        r = compute_square_modp(-<span class="number">1</span> , n)</span><br><span class="line">        <span class="built_in">print</span>(<span class="number">1</span>)</span><br><span class="line">        cf = ContinuedFraction(r , n)</span><br><span class="line">        square = iroot(n , <span class="number">2</span>)[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(cf.fractionlist)):</span><br><span class="line">            <span class="keyword">if</span> cf.fractionlist[i][<span class="number">1</span>] &lt;= square <span class="keyword">and</span> cf.fractionlist[i+<span class="number">1</span>][<span class="number">1</span>] &gt;= square:</span><br><span class="line">                p , q = cf.fractionlist[i]</span><br><span class="line">                a = q</span><br><span class="line">                b = q*r - p*n</span><br><span class="line">                <span class="keyword">assert</span> a **<span class="number">2</span> + b ** <span class="number">2</span> == n</span><br><span class="line">                <span class="keyword">return</span> a , <span class="built_in">abs</span>(b)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">convert_to_Zi</span>(<span class="params">A</span>):</span></span><br><span class="line">    <span class="keyword">assert</span> A.count(<span class="number">0</span>) == <span class="number">2</span></span><br><span class="line">    nonzero = []</span><br><span class="line">    zero = []</span><br><span class="line">    temp = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">4</span>):</span><br><span class="line">        <span class="keyword">if</span> A[i] == <span class="number">0</span>:</span><br><span class="line">            zero.append(i)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            nonzero.append(i)</span><br><span class="line">            temp.append(A[i])</span><br><span class="line">    a ,b = temp</span><br><span class="line">    k = <span class="number">224</span></span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">pow</span>(a**<span class="number">2</span> + b**<span class="number">2</span> , (p-<span class="number">1</span>)//<span class="number">2</span> , p) != <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span></span><br><span class="line">    lamda = compute_square_modp((l**k) * inverse(a**<span class="number">2</span>+b**<span class="number">2</span> , p) , p)</span><br><span class="line">    m = (l**k - (a**<span class="number">2</span>+b**<span class="number">2</span>)*lamda**<span class="number">2</span>) // p</span><br><span class="line">    <span class="keyword">while</span> <span class="number">1</span>:</span><br><span class="line">        w = randint(<span class="number">1</span> , p-<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">if</span> (a*lamda + w) % <span class="number">2</span> == <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        x = (m * inverse(<span class="number">2</span>*lamda*b , p) - a * w * inverse(b , p)) % p</span><br><span class="line">        n = (l ** k - (a*lamda +  w*p)**<span class="number">2</span> - (b*lamda + x*p)**<span class="number">2</span>)// p**<span class="number">2</span></span><br><span class="line">        <span class="keyword">if</span> n%<span class="number">4</span> != <span class="number">0</span> <span class="keyword">or</span> n &lt; <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        n //= <span class="number">4</span></span><br><span class="line">        temp = solve_yz(n)</span><br><span class="line">        <span class="keyword">if</span> temp != -<span class="number">1</span>:</span><br><span class="line">            y , z = temp</span><br><span class="line">            ab = [a*lamda+w*p , b*lamda + x*p]</span><br><span class="line">            res = [<span class="number">0</span>] * <span class="number">4</span></span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">4</span>):</span><br><span class="line">                <span class="keyword">if</span> i <span class="keyword">in</span> zero:</span><br><span class="line">                    res[i] = temp[zero.index(i)]*<span class="number">2</span>*p</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    res[i] = ab[nonzero.index(i)]</span><br><span class="line">            <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<p>这里同时考虑了0的位置不同的问题，开头和结尾是用于B = D = 0或C = D = 0的情况的。但由于这里有很多随机处（二次剩余与n的素数），因此这个函数可能跑的很慢也有可能很快。</p>
+<p>有了这个以后，接下来如果我们能够用对角矩阵将任意矩阵变成对角矩阵，就能够使用上面的方法将这些矩阵一一分解。文献[1]使用的是这种方法，使用了7个矩阵来表示任意矩阵(4个对角矩阵与三个基矩阵)但我尝试以后，总是找不到能够同时满足所有的对角矩阵A<sup>2</sup>+B<sup>2</sup>为二次剩余的情况，不知道是方法问题还是写出bug了。但我尝试了另一条路。上面的方法并不是一定需要对角矩阵的，只要两个位置是0即可，而对角线相等，反对角线相反的矩阵刚好是B = D = 0的情况，而这种矩阵是很容易构造的。</p>
+<p><img src="/images/TCTF-0CTF2021-final-EzHash/matrix3.png" /></p>
+<p>当<span class="math inline">\(\alpha,w\)</span>满足 <span class="math display">\[
+\alpha w = \frac{M_4}{M_1}\\
+-\frac{w}{\alpha}=\frac{M_2}{M_3}\\
+=&gt;-w^2=\frac{M_4M_2}{M_1M_3}
+\]</span> 如果右边的是一个二次剩余，则我们能够算出<span class="math inline">\(\alpha\)</span>与w，从而用三个矩阵来表示出来。如果它不是二次剩余，我们可以通过左乘一个基矩阵，来打散M，由于有加法，因此结果是否为二次剩余是不确定的，粗略看大致为1/2的概率同时，w和a也必须是二次剩余，这里的随机性也得通过左乘来提供。(在尝试中，有些矩阵使用这种方式似乎无效，而其他的矩阵大约在3-4次左右能够成功。)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">diagonalize</span>(<span class="params">M</span>):</span></span><br><span class="line">    left = <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> <span class="number">1</span>:</span><br><span class="line">        <span class="built_in">print</span>(left)</span><br><span class="line">        m1 , m2 = M[<span class="number">0</span>]</span><br><span class="line">        m3 , m4 = M[<span class="number">1</span>]</span><br><span class="line">        temp = -m4 * m2 * inverse(m1 * m3 , p) % p</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">pow</span>(temp , (p-<span class="number">1</span>)//<span class="number">2</span> , p) == <span class="number">1</span>:</span><br><span class="line">            w = compute_square_modp(temp , p)</span><br><span class="line">            ws = (w,-w)</span><br><span class="line">            <span class="keyword">assert</span> <span class="built_in">pow</span>(w,<span class="number">2</span>,p) == temp</span><br><span class="line">            <span class="keyword">for</span> w <span class="keyword">in</span> ws:</span><br><span class="line">                a = -w * m3 * inverse(m2 ,p ) % p</span><br><span class="line">                f1 = m1</span><br><span class="line">                f2 = m3 * inverse(a , p) % p</span><br><span class="line">                <span class="keyword">if</span> <span class="built_in">pow</span>(a , (p-<span class="number">1</span>)//<span class="number">2</span>,p) ==<span class="number">1</span> <span class="keyword">and</span> <span class="built_in">pow</span>(w , (p-<span class="number">1</span>)//<span class="number">2</span>,p) ==<span class="number">1</span> <span class="keyword">and</span> <span class="built_in">pow</span>(f1**<span class="number">2</span>+f2**<span class="number">2</span> , (p-<span class="number">1</span>)//<span class="number">2</span>,p) ==<span class="number">1</span>:</span><br><span class="line">                    <span class="keyword">return</span> left , [[<span class="number">1</span> , <span class="number">0</span>] , [<span class="number">0</span> , a]] , [[f1 , -f2] , [f2 , f1]] , [[<span class="number">1</span> , <span class="number">0</span>] , [<span class="number">0</span> , w]]</span><br><span class="line">        M = Zi_to_PSLp(mul(g[<span class="number">1</span>] , PSLp_to_Zi(M)))</span><br><span class="line">        left += <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>至此，分解完毕。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">preimages</span>(<span class="params">M</span>):</span></span><br><span class="line">    left , a, b,c = diagonalize(M)</span><br><span class="line">    <span class="built_in">print</span>(left)</span><br><span class="line">    flist = [<span class="number">4</span>]*left</span><br><span class="line">    <span class="keyword">for</span> x <span class="keyword">in</span> (a,b,c):</span><br><span class="line">        temp = PSLp_to_Zi(x)</span><br><span class="line">        tempm = convert_to_Zi(temp)</span><br><span class="line">        <span class="built_in">print</span>(tempm)</span><br><span class="line">        flist += factor_Zi(tempm)</span><br><span class="line">        <span class="built_in">print</span>(flist)</span><br><span class="line">    <span class="keyword">return</span> flist</span><br></pre></td></tr></table></figure>
+<p>实验中，仍然有些bug可能，diagonalize函数有概率永远无解，暂未研究原因，其他的也还不知道是否有更好的方法能够提高成功概率。实验时，大多数的矩阵在30s-40s左右跑出结果，但也有少部分矩阵能在3s内秒出，能够满足题目10s的要求。剩下的就没再试着本地起题目试着打了(懒得写交互)</p>
+<h2 id="参考文献">参考文献</h2>
+<p>[1] Petit C., Lauter K., Quisquater JJ. (2008) Full Cryptanalysis of LPS and Morgenstern Hash Functions. In: Ostrovsky R., De Prisco R., Visconti I. (eds) Security and Cryptography for Networks. SCN 2008. Lecture Notes in Computer Science, vol 5229. Springer, Berlin, Heidelberg.</p>
+<p>[2] G. Zémor and J.-P. Tillich. Collisions for the LPS expander graph hash function. To appear in the proceedings of Advances in Cryptology - EUROCRYPT 2008, 2008.</p>
+<p>[3] G. Davidoff, P. Sarnak and A. Valette. Elementary Number Theory, Group Theory, and Ramanujan Graphs. Cambridge University Press, 2003.</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CTF/" rel="tag"># CTF</a>
+              <a href="/tags/Hash/" rel="tag"># Hash</a>
+              <a href="/tags/Mathematics/" rel="tag"># Mathematics</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/10/06/bytesctf2021-final/" rel="prev" title="[bytesctf2021 final]Crypto WP">
+      <i class="fa fa-chevron-left"></i> [bytesctf2021 final]Crypto WP
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/10/07/papers/" rel="next" title="文献收集整理(慢慢更)">
+      文献收集整理(慢慢更) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E6%A0%B8%E5%BF%83%E4%BB%A3%E7%A0%81"><span class="nav-number">1.</span> <span class="nav-text">题目核心代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AF%94%E8%B5%9B%E4%B8%AD%E7%9A%84%E5%B0%9D%E8%AF%95"><span class="nav-number">2.</span> <span class="nav-text">比赛中的尝试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AF%94%E8%B5%9B%E5%90%8E%E7%9A%84%E6%80%9D%E8%80%83"><span class="nav-number">3.</span> <span class="nav-text">比赛后的思考</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%93%88%E5%B8%8C%E6%96%B9%E6%A1%88lps"><span class="nav-number">4.</span> <span class="nav-text">哈希方案LPS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E8%A7%A3%E6%80%9D%E8%B7%AF"><span class="nav-number">5.</span> <span class="nav-text">分解思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E8%A7%A3%E5%89%8D%E5%87%86%E5%A4%87%E7%9A%84%E5%B7%A5%E5%85%B7%E5%87%BD%E6%95%B0%E4%B8%8E%E5%8F%98%E9%87%8F"><span class="nav-number">6.</span> <span class="nav-text">分解前准备的工具函数与变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#zi%E4%B8%8A%E7%9A%84%E5%88%86%E8%A7%A3"><span class="nav-number">7.</span> <span class="nav-text">Z[i]上的分解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#psl%E5%88%B0zi%E7%9A%84%E8%BD%AC%E5%8C%96"><span class="nav-number">8.</span> <span class="nav-text">PSL到Z[i]的转化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">9.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="shallow"
+      src="/images/header.jpg">
+  <p class="site-author-name" itemprop="name">shallow</p>
+  <div class="site-description" itemprop="description">Crypto/CTFs/Mathematics</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/shal10w" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;shal10w" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.wootec.top/" title="https:&#x2F;&#x2F;www.wootec.top" rel="noopener" target="_blank">Reverier</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cor1e.cn/" title="https:&#x2F;&#x2F;www.cor1e.cn" rel="noopener" target="_blank">Cor1e</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/arttnba3" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;arttnba3" rel="noopener" target="_blank">arttnba3</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/qq_39679772" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_39679772" rel="noopener" target="_blank">zjx带佬</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/mer_cer" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;mer_cer" rel="noopener" target="_blank">mercer</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://eqqie.cn/" title="https:&#x2F;&#x2F;eqqie.cn" rel="noopener" target="_blank">eqqie</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shallow</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="因为一次偶然机会做了一下nsucrypto round 2 的第五题。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[nsucrypto] Non-linear hiding">
+<meta property="og:url" content="http://yoursite.com/2021/10/27/nsucryt5/index.html">
+<meta property="og:site_name" content="shallow&#39;s blog">
+<meta property="og:description" content="因为一次偶然机会做了一下nsucrypto round 2 的第五题。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/images/nsucryt5/problem.png">
+<meta property="article:published_time" content="2021-10-27T02:59:01.000Z">
+<meta property="article:modified_time" content="2021-10-27T07:42:43.629Z">
+<meta property="article:author" content="shallow">
+<meta property="article:tag" content="Crypto">
+<meta property="article:tag" content="nsucrypto">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/nsucryt5/problem.png">
+
+<link rel="canonical" href="http://yoursite.com/2021/10/27/nsucryt5/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>[nsucrypto] Non-linear hiding | shallow's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">shallow's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/10/27/nsucryt5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="shallow">
+      <meta itemprop="description" content="Crypto/CTFs/Mathematics">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="shallow's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [nsucrypto] Non-linear hiding
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-10-27 10:59:01 / 修改时间：15:42:43" itemprop="dateCreated datePublished" datetime="2021-10-27T10:59:01+08:00">2021-10-27</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/" itemprop="url" rel="index"><span itemprop="name">CTF</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>因为一次偶然机会做了一下nsucrypto round 2 的第五题。</p>
+<span id="more"></span>
+<h2 id="题目">题目</h2>
+<p><img src="/images/nsucryt5/problem.png" /></p>
+<p><a target="_blank" rel="noopener" href="https://nsucrypto.nsu.ru/media/MediaFile/data-sharing.txt">数据在这里获取</a></p>
+<p>起初刚看到这道题时，认为只是个GF(2)上的solve_right问题，将所有的x构成一个n*40矩阵，乘以一个40*1矩阵，能够得到y，当x矩阵满秩时，而这个40*1矩阵有且仅有一个汉明重量为20的解，即为我们希望的解。</p>
+<p>然而并不是这么简单，直接这么解是无解的。仔细看题会发现，40个x给的是S上的元素，从F<sub>2</sub><sup>5</sup>到S上的映射为一个<strong>secret bijective</strong>，意味着我们得不到这张映射表，结合上题目名的non-linear hiding，很明显，意思是我们需要先求出这个映射表才能继续做下去。</p>
+<h2 id="困难点">困难点</h2>
+<p>若仅仅只是不给映射表，通过解方程组，很容易解出映射表。但是问题是这40个x还仅仅只取了20个进行操作，导致若问题表示为n*40矩阵乘以40*1向量，则这个问题被转化为了一个有72个未知数的二次非线性方程(32个字母加上40个0/1)。</p>
+<h2 id="整体思路">整体思路</h2>
+<p>非线性方程是我们不想看到的，所以我们先不去考虑40*1的选择矩阵，而去考虑n*41的增广矩阵，其中，左边40列为x组成的矩阵，组成元素为S中的元素；最右边一列为y向量，组成元素为F<sub>2</sub><sup>5</sup>的元素。</p>
+<p>我们并不知道S中元素相互异或的结果，但我们知道两个相同的元素，异或为0，S中所有元素异或的结果也为0。所以我们的入手点就在这。如果我们可以通过一些行向量的线性组合，得到一些前39列均为0的矩阵行，那么假如y列不为0,那么我们可以得到第40列一定被选取，并且第40列 == y列，从而得到很多条方程，解出映射表，从而回到最初的solveright问题。若y列为0,说明该列不被选取，往前找倒最后一个令y不为0的列即可。</p>
+<h2 id="数据结构">数据结构</h2>
+<p>在消去第一列的元素时，第一列会变为0,而剩下的列会是一些元素的异或，因为我们不知道这些异或的结果，无法写成一个数。随着消去过程逐渐进行，后面的列的位会是相当多S中元素异或的结果。</p>
+<p>最直观的方法(我最初的想法)是直接用字符串或是字符列表来表示，但这样会导致这些元素在异或时，需要遍历所有的位，来进行删除或是添加。导致大量的时间消耗。</p>
+<p>因此我们可以才用一个32位int来表示，将字母k表示为2**table.index(k)，table为S中所有元素集合。字母k与字母m的异或则可以写成2**table.index(k) ^ 2**table.index(m)。使用这样的数据结构，可以让元素异或时直接将对应的32位int异或即可得到结果，并且0就代表0，能够获得更高的效率。</p>
+<h2 id="寻求能消去的位">寻求能消去的位</h2>
+<p>这是这个问题最重要的一点，直观来看，我们将一些第一维相等的向量相互异或能够得到一些第一维为0的向量，但是这样的向量个数肯定是比最初的少的，如果说向量个数下降速度很快那么这题就需要大量的数据以及计算量，无法解决。比如若一次会将向量数除以2,则总共需要2**39的数据与计算量才能够解决，这显然是不可能的。但如果一次只是将向量数减k，那么只要39*k的数据与计算量即可。题目给了6432位数据。除以5为1286,只要k不大即可。</p>
+<p>确定下降速度为第一种还是第二种，先分析如何去寻找这些消去的位。</p>
+<p>用枚举的方法能够求第一维的结果，因为第一次所有的元素都只有一位是1,所以很容易找到，但是后面的就会有多位是1,所以就没办法直接枚举了。所以我们可以用矩阵来求解。</p>
+<p>设某一列x = (m<sub>1</sub>, m<sub>2</sub>, m<sub>3</sub>, ...,m<sub>k</sub>)<sup>T</sup></p>
+<p>这里 <span class="math display">\[
+m_i = \Sigma^{32}_{j=0}2^jc_{i,j}
+\]</span> 其中，<span class="math inline">\(c_{i,j}\)</span>为0或1.</p>
+<p>我们想要找一个向量v使得vx = 0</p>
+<p>也就是 <span class="math display">\[
+\Sigma^k_{i=0} (v[i]\Sigma^{32}_{j=0}2^jc_{j,i}) = 0
+\]</span> 将2<sup>j</sup>提出，可以得到 <span class="math display">\[
+\Sigma^{32}_{j=0} (2^j\Sigma^{k}_{i=0}v[i]c_{j,i}) = 0
+\]</span> 由于每一位都必须为0,所以我们可以，得到32条方程： <span class="math display">\[
+\Sigma^{k}_{i=0}v[i]c_{j,i} = 0 (j = 0,1,...,31)
+\]</span> 设矩阵<span class="math inline">\(M = \{c_{j,i}\}\)</span>,是一个32*k维矩阵，有 <span class="math display">\[
+Mv = 0
+\]</span> 也就是将问题转化为求齐次线性方程组的通解问题。将M化为行阶梯型，写出所有的通解即可。v的数量为k - M.rank()。M的阶至多为32,在k大的情况下极大概率为32.所以下降速度为第二种情况，并不算太大，可以求解。</p>
+<p>代码实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getzero</span>(<span class="params">vec</span>):</span></span><br><span class="line">    M = Matrix(GF(<span class="number">2</span>) , <span class="number">32</span> , <span class="built_in">len</span>(vec))</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(vec)):</span><br><span class="line">        temp = vec[i]</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">32</span>):</span><br><span class="line">            <span class="keyword">if</span> temp %<span class="number">2</span> == <span class="number">1</span>:</span><br><span class="line">                M[j,i] = <span class="number">1</span></span><br><span class="line">            temp //= <span class="number">2</span></span><br><span class="line">    tempM = M</span><br><span class="line">    M = M.rref() <span class="comment">#行阶梯型</span></span><br><span class="line">    resvec = []</span><br><span class="line">    one_position = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">32</span>):</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(vec)):</span><br><span class="line">            <span class="keyword">if</span> M[i , j] == <span class="number">1</span>:</span><br><span class="line">                one_position.append(j)</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(vec)):</span><br><span class="line">        tempv = vector(GF(<span class="number">2</span>) , <span class="built_in">len</span>(vec))</span><br><span class="line">        <span class="keyword">if</span> i <span class="keyword">in</span> one_position:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        tempv[i] = <span class="number">1</span></span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">32</span>):</span><br><span class="line">            <span class="keyword">if</span> M[j , i] == <span class="number">1</span>:</span><br><span class="line">                tempv[one_position[j]] = <span class="number">1</span></span><br><span class="line">        resvec.append(tempv)</span><br><span class="line">    res = resvec</span><br><span class="line">    <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<p>这一段是问题的核心，剩下的就是一些边边角角的补充了。</p>
+<h3 id="迭代过程">迭代过程</h3>
+<p>得到向量后，需要对原本的x进行更新</p>
+<p>也就是使用所有的向量，对剩余的x和y更新一次。这里是主要的时间花费地方，需要对40列，每一列的k维遍历k-32次。</p>
+<p>即需要计算40*(k-32)k，k在最开始能够达到1200左右，则我们第一次需要计算5kw次以上。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">apply_vec</span>(<span class="params">ms,vecs</span>):</span></span><br><span class="line">    newlist = []</span><br><span class="line">    <span class="keyword">for</span> m <span class="keyword">in</span> ms:</span><br><span class="line">        templist = []</span><br><span class="line">        <span class="keyword">for</span> v <span class="keyword">in</span> vecs:</span><br><span class="line">            temp = <span class="number">0</span></span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(v)):</span><br><span class="line">                <span class="keyword">if</span> v[i] == <span class="number">1</span>:</span><br><span class="line">                    temp ^= m[i]</span><br><span class="line">            templist.append(temp)</span><br><span class="line">        newlist.append(templist)</span><br><span class="line">    <span class="keyword">return</span> newlist</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">apply_y</span>(<span class="params">y,vecs</span>):</span></span><br><span class="line">    res = []</span><br><span class="line">    <span class="keyword">for</span> v <span class="keyword">in</span> vecs:</span><br><span class="line">        temp = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(v)):</span><br><span class="line">            <span class="keyword">if</span> v[j] == <span class="number">1</span>:</span><br><span class="line">                temp ^= y[j]</span><br><span class="line">        res.append(temp)</span><br><span class="line">    <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="主函数">主函数</h3>
+<p>首先我们需要先确定数据量，由于我们需要39次消去过程，每次减去32个位，为最后一次仍有足够的信息去得到映射表，我们需要39<em>32+ 32 = 1280，恰好y给了6432位 = 1280 </em> 5 + 32。将数据进行预处理后直接调用函数迭代即可</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">tolist</span>(<span class="params">y</span>):</span></span><br><span class="line">    res = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1280</span>):</span><br><span class="line">        temp = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">5</span>):</span><br><span class="line">            temp &lt;&lt;=<span class="number">1</span></span><br><span class="line">            temp += <span class="built_in">int</span>(y[i*<span class="number">5</span>+j])</span><br><span class="line">        res.append(temp)</span><br><span class="line">    <span class="keyword">return</span> res</span><br><span class="line">y = tolist(y)</span><br><span class="line">ms = []</span><br><span class="line">size = <span class="number">64</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> xs:</span><br><span class="line">    temp = [[j] <span class="keyword">for</span> j <span class="keyword">in</span> i[:<span class="number">1280</span>]]</span><br><span class="line">    ms.append(temp)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">39</span>):</span><br><span class="line">    vecs = getzero(ms[<span class="number">0</span>])</span><br><span class="line">    </span><br><span class="line">    y1 = apply_y(y , vecs)</span><br><span class="line">    <span class="built_in">print</span>(y1[:<span class="number">64</span>])</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> y1:</span><br><span class="line">        <span class="keyword">if</span> i != <span class="number">0</span>:</span><br><span class="line">            y = y1</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;y is zero&#x27;</span>)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    ms = ms[<span class="number">1</span>:]</span><br><span class="line">    <span class="built_in">print</span>(<span class="built_in">len</span>(vecs))</span><br><span class="line">    ms = apply_vec(ms , vecs)</span><br><span class="line"><span class="built_in">print</span>(y)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(ms[<span class="number">0</span>])</span><br></pre></td></tr></table></figure>
+<p>最后的结果即为最后一个选取的列，与y。这里我们得到的结果是最后一个选取的列为倒数第三列，最后两列不被选取。因此我们会有60多条方程，足够我们计算出映射表。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">y = </span><br><span class="line">m = </span><br><span class="line">table = <span class="string">&#x27;0123456789abcdefghijklmnopqrstuy&#x27;</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getzero</span>(<span class="params">m , c</span>):</span></span><br><span class="line">    M = Matrix(GF(<span class="number">2</span>) , <span class="built_in">len</span>(m) , <span class="number">32</span>)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(m)):</span><br><span class="line">        temp = m[i]</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">32</span>):</span><br><span class="line">            <span class="keyword">if</span> temp %<span class="number">2</span> == <span class="number">1</span>:</span><br><span class="line">                M[i,j] = <span class="number">1</span></span><br><span class="line">            temp //= <span class="number">2</span></span><br><span class="line">    v = vector(GF(<span class="number">2</span>) , <span class="built_in">len</span>(m))</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(y)):</span><br><span class="line">        v[i] = y[i]%<span class="number">2</span></span><br><span class="line">    <span class="keyword">return</span> M.solve_right(v)</span><br><span class="line"></span><br><span class="line">dic = &#123;&#125;</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">32</span>):</span><br><span class="line">    dic[table[i]] = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">5</span>):</span><br><span class="line">    temp = getzero(m , y)</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">32</span>):</span><br><span class="line">        dic[table[j]] += <span class="built_in">int</span>(temp[j]) * <span class="number">2</span>**i</span><br><span class="line">    y = [x &gt;&gt; <span class="number">1</span> <span class="keyword">for</span> x <span class="keyword">in</span> y]</span><br><span class="line"><span class="built_in">print</span>(dic)</span><br></pre></td></tr></table></figure>
+<p>这里可以用GF(2^5)上的矩阵来一步求出映射表，但由于写出这上面的元素过于麻烦，于是才用GF(2)矩阵求五次，一样的效果。</p>
+<p>获得映射表</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#x27;0&#x27;: 4, &#x27;1&#x27;: 25, &#x27;2&#x27;: 1, &#x27;3&#x27;: 14, &#x27;4&#x27;: 27, &#x27;5&#x27;: 6, &#x27;6&#x27;: 31, &#x27;7&#x27;: 10, &#x27;8&#x27;: 17, &#x27;9&#x27;: 11, &#x27;a&#x27;: 15, &#x27;b&#x27;: 18, &#x27;c&#x27;: 16, &#x27;d&#x27;: 26, &#x27;e&#x27;: 23, &#x27;f&#x27;: 3, &#x27;g&#x27;: 13, &#x27;h&#x27;: 20, &#x27;i&#x27;: 8, &#x27;j&#x27;: 9, &#x27;k&#x27;: 29, &#x27;l&#x27;: 19, &#x27;m&#x27;: 30, &#x27;n&#x27;: 28, &#x27;o&#x27;: 12, &#x27;p&#x27;: 7, &#x27;q&#x27;: 2, &#x27;r&#x27;: 5, &#x27;s&#x27;: 21, &#x27;t&#x27;: 24, &#x27;u&#x27;: 22, &#x27;y&#x27;: 0&#125;</span><br></pre></td></tr></table></figure>
+<p>最后得到答案</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sage.<span class="built_in">all</span> <span class="keyword">import</span> *</span><br><span class="line">y = </span><br><span class="line">xs = </span><br><span class="line">dic = &#123;<span class="string">&#x27;0&#x27;</span>: <span class="number">4</span>, <span class="string">&#x27;1&#x27;</span>: <span class="number">25</span>, <span class="string">&#x27;2&#x27;</span>: <span class="number">1</span>, <span class="string">&#x27;3&#x27;</span>: <span class="number">14</span>, <span class="string">&#x27;4&#x27;</span>: <span class="number">27</span>, <span class="string">&#x27;5&#x27;</span>: <span class="number">6</span>, <span class="string">&#x27;6&#x27;</span>: <span class="number">31</span>, <span class="string">&#x27;7&#x27;</span>: <span class="number">10</span>, <span class="string">&#x27;8&#x27;</span>: <span class="number">17</span>, <span class="string">&#x27;9&#x27;</span>: <span class="number">11</span>, <span class="string">&#x27;a&#x27;</span>: <span class="number">15</span>, <span class="string">&#x27;b&#x27;</span>: <span class="number">18</span>, <span class="string">&#x27;c&#x27;</span>: <span class="number">16</span>, <span class="string">&#x27;d&#x27;</span>: <span class="number">26</span>, <span class="string">&#x27;e&#x27;</span>: <span class="number">23</span>, <span class="string">&#x27;f&#x27;</span>: <span class="number">3</span>, <span class="string">&#x27;g&#x27;</span>: <span class="number">13</span>, <span class="string">&#x27;h&#x27;</span>: <span class="number">20</span>, <span class="string">&#x27;i&#x27;</span>: <span class="number">8</span>, <span class="string">&#x27;j&#x27;</span>: <span class="number">9</span>, <span class="string">&#x27;k&#x27;</span>: <span class="number">29</span>, <span class="string">&#x27;l&#x27;</span>: <span class="number">19</span>, <span class="string">&#x27;m&#x27;</span>: <span class="number">30</span>, <span class="string">&#x27;n&#x27;</span>: <span class="number">28</span>, <span class="string">&#x27;o&#x27;</span>: <span class="number">12</span>, <span class="string">&#x27;p&#x27;</span>: <span class="number">7</span>, <span class="string">&#x27;q&#x27;</span>: <span class="number">2</span>, <span class="string">&#x27;r&#x27;</span>: <span class="number">5</span>, <span class="string">&#x27;s&#x27;</span>: <span class="number">21</span>, <span class="string">&#x27;t&#x27;</span>: <span class="number">24</span>, <span class="string">&#x27;u&#x27;</span>: <span class="number">22</span>, <span class="string">&#x27;y&#x27;</span>: <span class="number">0</span>&#125;</span><br><span class="line">ms = []</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">40</span>):</span><br><span class="line">    temp = <span class="string">&#x27;&#x27;</span></span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> xs[i]:</span><br><span class="line">        temp += <span class="built_in">bin</span>(dic[j])[<span class="number">2</span>:].rjust(<span class="number">5</span> , <span class="string">&#x27;0&#x27;</span>)</span><br><span class="line">    ms.append(temp)</span><br><span class="line">M = Matrix(GF(<span class="number">2</span>) , <span class="number">6000</span> , <span class="number">40</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">40</span>):</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">6000</span>):</span><br><span class="line">        M[j ,i] = <span class="built_in">int</span>(ms[i][j])</span><br><span class="line">v = vector(GF(<span class="number">2</span>) , <span class="number">6000</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">6000</span>):</span><br><span class="line">    v[i] = <span class="built_in">int</span>(y[i])</span><br><span class="line">choose = M.solve_right(v)</span><br><span class="line">ms = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">40</span>):</span><br><span class="line">    <span class="keyword">if</span> choose[i] == <span class="number">1</span>:</span><br><span class="line">        temp = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> xs[i]:</span><br><span class="line">            temp &lt;&lt;= <span class="number">5</span></span><br><span class="line">            temp += dic[j]</span><br><span class="line">        ms ^= temp</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">bin</span>(ms))</span><br><span class="line">ans = []</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">40</span>):</span><br><span class="line">    <span class="keyword">if</span> choose[i] == <span class="number">1</span>:</span><br><span class="line">        ans.append(i)</span><br><span class="line"><span class="built_in">print</span>(ans)</span><br></pre></td></tr></table></figure>
+<h2 id="总结">总结</h2>
+<p>总得来讲是一道很有趣的题目，主要还是将一个非线性方程，利用线性的性质进行求解，通过仅有的一个单射条件从非线性的结构中找到一些线性的部分，从而解出整道题。</p>
+<p>但实际上，这道题给的条件并不是单射，而是双射，双射除此之外还能找到一个整体性质，也就是 <span class="math display">\[
+\Sigma_{i=0}^{32}S[i] = 0
+\]</span> 但这道题中并没有用到这个性质，给的条件过强了，如果说以后有机会再研究研究说不定也能通过这个性质出道题啥的。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Crypto/" rel="tag"># Crypto</a>
+              <a href="/tags/nsucrypto/" rel="tag"># nsucrypto</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/10/07/papers/" rel="prev" title="文献收集整理(慢慢更)">
+      <i class="fa fa-chevron-left"></i> 文献收集整理(慢慢更)
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE"><span class="nav-number">1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%B0%E9%9A%BE%E7%82%B9"><span class="nav-number">2.</span> <span class="nav-text">困难点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B4%E4%BD%93%E6%80%9D%E8%B7%AF"><span class="nav-number">3.</span> <span class="nav-text">整体思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">4.</span> <span class="nav-text">数据结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%BB%E6%B1%82%E8%83%BD%E6%B6%88%E5%8E%BB%E7%9A%84%E4%BD%8D"><span class="nav-number">5.</span> <span class="nav-text">寻求能消去的位</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%AD%E4%BB%A3%E8%BF%87%E7%A8%8B"><span class="nav-number">5.1.</span> <span class="nav-text">迭代过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E5%87%BD%E6%95%B0"><span class="nav-number">5.2.</span> <span class="nav-text">主函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="shallow"
+      src="/images/header.jpg">
+  <p class="site-author-name" itemprop="name">shallow</p>
+  <div class="site-description" itemprop="description">Crypto/CTFs/Mathematics</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/shal10w" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;shal10w" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.wootec.top/" title="https:&#x2F;&#x2F;www.wootec.top" rel="noopener" target="_blank">Reverier</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cor1e.cn/" title="https:&#x2F;&#x2F;www.cor1e.cn" rel="noopener" target="_blank">Cor1e</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/arttnba3" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;arttnba3" rel="noopener" target="_blank">arttnba3</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/qq_39679772" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_39679772" rel="noopener" target="_blank">zjx带佬</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/mer_cer" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;mer_cer" rel="noopener" target="_blank">mercer</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://eqqie.cn/" title="https:&#x2F;&#x2F;eqqie.cn" rel="noopener" target="_blank">eqqie</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shallow</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

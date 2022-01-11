@@ -28,7 +28,7 @@
 <meta property="og:description" content="这么多年paper全塞一个文件夹太乱了，整理一下">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-10-07T05:49:41.000Z">
-<meta property="article:modified_time" content="2021-10-11T15:31:14.963Z">
+<meta property="article:modified_time" content="2022-01-11T06:09:42.547Z">
 <meta property="article:author" content="shallow">
 <meta property="article:tag" content="Mathematics">
 <meta property="article:tag" content="Crypto">
@@ -197,7 +197,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-10-11 23:31:14" itemprop="dateModified" datetime="2021-10-11T23:31:14+08:00">2021-10-11</time>
+                <time title="修改时间：2022-01-11 14:09:42" itemprop="dateModified" datetime="2022-01-11T14:09:42+08:00">2022-01-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -223,6 +223,8 @@
         <p>这么多年paper全塞一个文件夹太乱了，整理一下</p>
 <span id="more"></span>
 <p>不过也懒得把那么多东西全扔上来，就先把最近看的放一放，其他的以后再说</p>
+<h2 id="mathematics">Mathematics</h2>
+<p>《<a target="_blank" rel="noopener" href="http://math.bme.hu/~gabor/oktatas/SztoM/DavidoffSarnakValette.pdf">Elementary Number Theory, Group Theory and Ramanujan Graphs</a>》</p>
 <h2 id="hash">Hash</h2>
 <h3 id="lps">LPS</h3>
 <p>《<a target="_blank" rel="noopener" href="https://www.iacr.org/archive/eurocrypt2008/49650252/49650252.pdf">Collisions for the LPS expander graph hash function</a>》</p>
@@ -232,14 +234,21 @@
 <h3 id="md5">md5</h3>
 <p>《<a target="_blank" rel="noopener" href="https://www.iacr.org/cryptodb/archive/2005/EUROCRYPT/2868/2868.pdf">How to Break MD5 and Other Hash Functions</a>》</p>
 <p>王小云院士的差分攻击</p>
-<h2 id="mathematics">Mathematics</h2>
-<p>《<a target="_blank" rel="noopener" href="http://math.bme.hu/~gabor/oktatas/SztoM/DavidoffSarnakValette.pdf">Elementary Number Theory, Group Theory and Ramanujan Graphs</a>》</p>
+<h2 id="symmetric-cryptography">Symmetric Cryptography</h2>
+<h3 id="stream-cipher">Stream Cipher</h3>
+<p>《<a target="_blank" rel="noopener" href="http://crypto.stanford.edu/~mironov/cs359/massey.pdf">Shift-Register Synthesis and BCH Decoding</a>》</p>
+<p>BM算法中M的原始论文（Berlekamp先提出的针对BCH的解码算法，Massey将其应用到LFSR中）</p>
+<h2 id="asymmetric-cryptography">Asymmetric Cryptography</h2>
+<p>《<a target="_blank" rel="noopener" href="https://www.math.auckland.ac.nz/~sgal018/crypto-book/crypto-book.html">Mathematics of Public Key Cryptography</a>》</p>
 <h2 id="lattice">Lattice</h2>
 <p>《<a target="_blank" rel="noopener" href="https://www.researchgate.net/publication/50863306_Factoring_Polynomials_with_Rational_Coefficients">Factoring Polynomials with Rational Coefficients</a>》</p>
 <p>LLL的原始论文（好像一般下下来的都挺不清晰，建议用学校图书馆vpn下）</p>
-<h2 id="stream-cipher">Stream Cipher</h2>
-<p>《<a target="_blank" rel="noopener" href="http://crypto.stanford.edu/~mironov/cs359/massey.pdf">Shift-Register Synthesis and BCH Decoding</a>》</p>
-<p>BM算法中M的原始论文（Berlekamp先提出的针对BCH的解码算法，Massey将其应用到LFSR中）</p>
+<p>《<a target="_blank" rel="noopener" href="https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.16.2086&amp;rep=rep1&amp;type=pdf">A Sieve Algorithm for the Shortest Lattice Vector Problem</a>》</p>
+<p>AKS01, 提出了AKS筛(第一个筛法)</p>
+<p>《<a target="_blank" rel="noopener" href="https://authors.library.caltech.edu/104723/1/%5B18622984%20-%20Journal%20of%20Mathematical%20Cryptology%5D%20Sieve%20algorithms%20for%20the%20shortest%20vector%20problem%20are%20practical.pdf">Sieve algorithms for the shortest vector problem are practical</a>》</p>
+<p>NV08, 对AKS筛做出了改进，提出了NV sieve，将筛法复杂度降低到能够实用的程度。</p>
+<p>《<a target="_blank" rel="noopener" href="https://cseweb.ucsd.edu/~pvoulgar/files/sieve.pdf">Faster exponential time algorithms for the shortest vector problem</a>》</p>
+<p>MV10, 提出了gauss sieve，与NV sieve复杂度相同但思路不同，实用中表现略好。</p>
 
     </div>
 
@@ -324,7 +333,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#hash"><span class="nav-number">1.</span> <span class="nav-text">Hash</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#lps"><span class="nav-number">1.1.</span> <span class="nav-text">LPS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#md5"><span class="nav-number">1.2.</span> <span class="nav-text">md5</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mathematics"><span class="nav-number">2.</span> <span class="nav-text">Mathematics</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lattice"><span class="nav-number">3.</span> <span class="nav-text">Lattice</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#stream-cipher"><span class="nav-number">4.</span> <span class="nav-text">Stream Cipher</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#mathematics"><span class="nav-number">1.</span> <span class="nav-text">Mathematics</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hash"><span class="nav-number">2.</span> <span class="nav-text">Hash</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#lps"><span class="nav-number">2.1.</span> <span class="nav-text">LPS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#md5"><span class="nav-number">2.2.</span> <span class="nav-text">md5</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#symmetric-cryptography"><span class="nav-number">3.</span> <span class="nav-text">Symmetric Cryptography</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#stream-cipher"><span class="nav-number">3.1.</span> <span class="nav-text">Stream Cipher</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#asymmetric-cryptography"><span class="nav-number">4.</span> <span class="nav-text">Asymmetric Cryptography</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lattice"><span class="nav-number">5.</span> <span class="nav-text">Lattice</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -410,7 +419,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2021</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="user"></i>
   </span>
